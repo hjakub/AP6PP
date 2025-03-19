@@ -1,0 +1,7 @@
+{
+  "name": "AP6PP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
