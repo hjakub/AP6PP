@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab3',
@@ -7,7 +8,9 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab3Page {
+  constructor(private authService: AuthService) {}
 
-  constructor() {}
-
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 }

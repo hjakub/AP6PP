@@ -1,0 +1,29 @@
+.coach, .course {
+    background: rgba(191, 191, 191, 0.33);
+    color: black;
+    padding: 20px;
+    width: 100%;
+    justify-self: center;
+    border-radius: 12px;
+    margin: 20px;
+}
+
+.coach ion-button, .course ion-button {
+    margin-left: 15px;
+}
+
+.section-title {
+    width: 80%;
+    max-width: 1000px;
+}
+
+ion-content {
+    width: 80%;
+    max-width: 1600px;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+    justify-items: center;
+    justify-self: center;
+    justify-content: center;
+}

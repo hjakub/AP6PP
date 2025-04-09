@@ -35,3 +35,82 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+/* COLORS */
+/* White #FFFFFF */
+/* Black #000000 */
+/* FMK Main Red #EA2839 */
+/* FMK Dark Red # 9B0528*/
+/* UTB Gray #46505A */
+/* UTB Cool Gray #C1C8CF */
+
+* {
+    font-family: 'Source Sans 3', sans-serif;
+}
+
+h1 {
+    font-family: 'Source Sans 3';
+    font-size: 48pt;
+    font-weight: bold;
+    color: black;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-family: 'Source Sans 3';
+    font-size: 24pt;
+    font-weight: bold;
+    color: black;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    font-family: 'Source Sans 3';
+    font-size: 16pt;
+    font-weight: bold;
+    color: black;
+}
+
+h4 {
+    font-family: 'Source Sans 3';
+    font-size: 12pt;
+    font-weight: bold;
+    color: black;
+}
+
+ion-button {
+    --background: #EA2839;
+    --color: white;
+}
+
+a {
+    color: #EA2839;
+}
+
+ion-button {
+    text-transform: none;
+}
+
+.t-form {
+    background: rgba(191, 191, 191, 0.33);
+    color: white;
+    padding: 20px;
+    width: 60%;
+    max-width: 800px;
+    justify-self: center;
+    border-radius: 20px;
+}
+
+.t-form p {
+    color: black;
+    justify-self: center;
+}
+
+.t-form ion-item {
+    border-radius: 4px;
+}
+
+.t-form ion-button {
+    width: 100%;
+}

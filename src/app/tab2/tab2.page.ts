@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab2',
@@ -7,7 +8,49 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class Tab2Page {
+  email = '';
+  password = '';
+  isSignUp = false;
+  loginFailed = false;
+  
+  constructor(private authService: AuthService) {}
 
-  constructor() {}
+  login() {
+    if (this.authService.login(this.email, this.password)) {
+      this.loginFailed = false;
+    } else {
+      this.loginFailed = true;
+      alert('Invalid email or password.');
+    }
+  }
 
+  logout() {
+    this.authService.logout();
+    this.email = '';
+    this.password = '';
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  toggleForm() {
+    this.isSignUp = !this.isSignUp;
+  }
+
+  passwordReset() {
+    
+  }
+
+  showReservations() {
+    
+  }
+
+  showSettings() {
+    
+  }
+
+  showPrivacy() {
+    
+  }
 }

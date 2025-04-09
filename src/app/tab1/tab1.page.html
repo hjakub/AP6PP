@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Home
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,32 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <h2 class="section-title">Coaches</h2>
+  <ion-card class="coach">
+    <ion-title>Mike Tyson</ion-title>
+    <ion-button>Reservation</ion-button>
+  </ion-card>
+  <ion-card class="coach">
+    <ion-title>Connor McGregor</ion-title>
+    <ion-button>Reservation</ion-button>
+  </ion-card>
+  <ion-card class="coach">
+    <ion-title>Dwayne Johnson</ion-title>
+    <ion-button>Reservation</ion-button>
+  </ion-card>
+  <h2 class="section-title">Courses</h2>
+  <ion-card class="course">
+    <ion-title>Kickboxing</ion-title>
+    <ion-button>Enroll</ion-button>
+    <ion-button>More info</ion-button>
+  </ion-card>
+  <ion-card class="course">
+    <ion-title>Yoga</ion-title>
+    <ion-button>Enroll</ion-button>
+    <ion-button>More info</ion-button>
+  </ion-card>
 </ion-content>

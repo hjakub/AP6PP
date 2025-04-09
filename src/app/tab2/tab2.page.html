@@ -1,17 +1,89 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <ion-title>Account</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
+      <ion-title size="large">Account</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-list>
+
+    <!-- Login Form -->
+    <ng-container *ngIf="!isLoggedIn(); else accountDetails">
+      <h1>Rezervace+</h1>
+      <ng-container *ngIf="!isSignUp">
+        <h2>Log in</h2>
+        <div class="t-form">
+          <ion-item>
+            <ion-input [(ngModel)]="email" label="Email" labelPlacement="stacked" placeholder="Enter your email" type="text"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input [(ngModel)]="password" label="Password" labelPlacement="stacked" placeholder="Enter your password" type="password"></ion-input>
+          </ion-item>
+          <ion-button (click)="login()">Log in</ion-button>
+          <p *ngIf="loginFailed" style="color: red;">Invalid email or password.</p>
+          <p>Don't remember password? <a (click)="passwordReset()">Reset it</a></p>
+          <p>Don't have an account yet? <a (click)="toggleForm()">Sign up</a></p>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <!-- Sign-up Form -->
+    <ng-container *ngIf="isSignUp">
+      <h2>Create an account</h2>
+      <div class="t-form">
+        <ion-item>
+          <ion-input label="Name" labelPlacement="stacked" placeholder="Enter your name" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Surname" labelPlacement="stacked" placeholder="Enter your surname" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Email" labelPlacement="stacked" placeholder="Enter your email" type="email"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Phone" labelPlacement="stacked" placeholder="Enter your phone number" type="phone"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Password" labelPlacement="stacked" placeholder="Enter your password" type="password"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Confirm Password" labelPlacement="stacked" placeholder="Confirm your password" type="password"></ion-input>
+        </ion-item>
+        <ion-button>Sign up</ion-button>
+        <p>Already have an account? <a (click)="toggleForm()">Log in</a></p>
+      </div>
+    </ng-container>
+
+    <!-- Logged-in User View -->
+    <ng-template #accountDetails>
+      <div class="profile-header">
+        <div class="avatar">
+          <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
+        </div>
+        <h2>Novak Djoković</h2>
+      </div>
+      <div class="profile-details">
+        <ion-grid>
+          <ion-row>
+            <ion-col><b>420</b> days on Rezervace+</ion-col>
+            <ion-col>|</ion-col>
+            <ion-col><b>69</b> training days</ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+      <div class="profile-actions">
+        <p><a (click)="showReservations()">My Reservations</a></p>
+        <p><a (click)="showSettings()">Settings</a></p>
+        <p><a (click)="showPrivacy()">Privacy</a></p>
+        <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
+      </div>
+    </ng-template>
+
+  </ion-list>
 </ion-content>

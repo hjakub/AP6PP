@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      Calendar
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,21 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title size="large">Calendar</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-datetime presentation="date" preferWheel="false"></ion-datetime>
+
+  <div class="events">
+    <h3>Upcoming events</h3>
+    <ng-container *ngIf="isLoggedIn(); else loginPrompt">
+      <p>No upcoming activities.</p>
+    </ng-container>
+
+    <ng-template #loginPrompt>
+      <p>You haven't logged in yet. Log in to see your upcoming activities!</p>
+      <ion-button href="tabs/tab2">Log in</ion-button>
+    </ng-template>
+  </div>
 </ion-content>
