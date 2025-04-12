@@ -12,9 +12,8 @@
       <ion-title size="large">Calendar</ion-title>
     </ion-toolbar>
   </ion-header>
-
+  <!--
   <ion-datetime presentation="date" preferWheel="false"></ion-datetime>
-
   <div class="events">
     <h3>Upcoming events</h3>
     <ng-container *ngIf="isLoggedIn(); else loginPrompt">
@@ -25,5 +24,6 @@
       <p>You haven't logged in yet. Log in to see your upcoming activities!</p>
       <ion-button href="tabs/tab2">Log in</ion-button>
     </ng-template>
-  </div>
+  </div>-->
+  <app-calendar></app-calendar>
 </ion-content>

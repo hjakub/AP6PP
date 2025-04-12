@@ -10,8 +10,15 @@ import { AuthService } from '../services/auth.service';
 export class Tab2Page {
   email = '';
   password = '';
+  enterpassword = '';
+  confirmpassword = '';
+  name = '';
+  surname = '';
+  newemail = '';
+  phone = '';
   isSignUp = false;
   loginFailed = false;
+  hidePassword = true;
   
   constructor(private authService: AuthService) {}
 
