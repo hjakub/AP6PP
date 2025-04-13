@@ -12,8 +12,8 @@
   </ion-header>
 
   <ion-list>
-
-    <!-- Login Form -->
+<!-- 
+    // Login Form
     <ng-container *ngIf="!isLoggedIn(); else accountDetails">
       <h1>Rezervace+</h1>
       <ng-container *ngIf="!isSignUp">
@@ -36,7 +36,7 @@
       </ng-container>
     </ng-container>
 
-    <!-- Sign-up Form -->
+    // Sign-up Form
     <ng-container *ngIf="isSignUp">
       <h2>Create an account</h2>
       <div class="t-form">
@@ -70,9 +70,9 @@
         <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
       </div>
     </ng-container>
-
+-->
     <!-- Logged-in User -->
-    <ng-template #accountDetails>
+    <!-- <ng-template #accountDetails> -->
       <div class="profile-header">
         <div class="avatar">
           <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
@@ -94,9 +94,8 @@
         <p><a (click)="showPrivacy()">Privacy</a></p>
         <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
       </div>
-    </ng-template>
+    <!--</ng-template>-->
 
-    <!-- Logged in user v2 -->
      
 
   </ion-list>

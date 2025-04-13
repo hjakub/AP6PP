@@ -32,8 +32,8 @@ img {
 
 .profile-details {
     text-align: center;
-    width: 30%;
-    max-width: 600px;
+    width: 50%;
+    max-width: 400px;
     justify-self: center;
 }
 
@@ -70,6 +70,11 @@ input {
 
 .clickable {
     cursor: pointer;
+}
+
+.clickable:hover {
+    color: #ff4b4b;
+    text-decoration: underline;
 }
   
 input:focus {
