@@ -30,8 +30,8 @@
           </div>
           <ion-button (click)="login()">Log in</ion-button>
           <p *ngIf="loginFailed" style="color: red;">Invalid email or password.</p>
-          <p>Don't remember password? <a (click)="passwordReset()">Reset it</a></p>
-          <p>Don't have an account yet? <a (click)="toggleForm()">Sign up</a></p>
+          <p>Don't remember password? <a class="clickable" (click)="passwordReset()">Reset it</a></p>
+          <p>Don't have an account yet? <a class="clickable" (click)="toggleForm()">Sign up</a></p>
         </div>
       </ng-container>
     </ng-container>
@@ -67,7 +67,7 @@
           <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
         </div>
         <ion-button>Sign up</ion-button>
-        <p>Already have an account? <a (click)="toggleForm()">Log in</a></p>
+        <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
       </div>
     </ng-container>
 

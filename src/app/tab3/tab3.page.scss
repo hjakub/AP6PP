@@ -6,6 +6,22 @@ ion-datetime {
     margin: 20px;
 }
 
-.events {
-    margin: 20px;
+#calendar-title,
+#calendar-button {
+    float:left;
+    width: 50%;
+}
+
+.reservation-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    float: right;
+    padding: 8px 16px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 16px;
 }
