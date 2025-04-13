@@ -12,8 +12,8 @@
   </ion-header>
 
   <ion-list>
-
-    <!-- Login Form -->
+<!-- 
+    // Login Form
     <ng-container *ngIf="!isLoggedIn(); else accountDetails">
       <h1>Rezervace+</h1>
       <ng-container *ngIf="!isSignUp">
@@ -30,13 +30,13 @@
           </div>
           <ion-button (click)="login()">Log in</ion-button>
           <p *ngIf="loginFailed" style="color: red;">Invalid email or password.</p>
-          <p>Don't remember password? <a (click)="passwordReset()">Reset it</a></p>
-          <p>Don't have an account yet? <a (click)="toggleForm()">Sign up</a></p>
+          <p>Don't remember password? <a class="clickable" (click)="passwordReset()">Reset it</a></p>
+          <p>Don't have an account yet? <a class="clickable" (click)="toggleForm()">Sign up</a></p>
         </div>
       </ng-container>
     </ng-container>
 
-    <!-- Sign-up Form -->
+    // Sign-up Form
     <ng-container *ngIf="isSignUp">
       <h2>Create an account</h2>
       <div class="t-form">
@@ -67,12 +67,12 @@
           <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
         </div>
         <ion-button>Sign up</ion-button>
-        <p>Already have an account? <a (click)="toggleForm()">Log in</a></p>
+        <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
       </div>
     </ng-container>
-
+-->
     <!-- Logged-in User -->
-    <ng-template #accountDetails>
+    <!-- <ng-template #accountDetails> -->
       <div class="profile-header">
         <div class="avatar">
           <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
@@ -94,9 +94,8 @@
         <p><a (click)="showPrivacy()">Privacy</a></p>
         <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
       </div>
-    </ng-template>
+    <!--</ng-template>-->
 
-    <!-- Logged in user v2 -->
      
 
   </ion-list>

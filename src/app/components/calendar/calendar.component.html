@@ -1,27 +1,46 @@
 <div class="calendar-container">
     <main class="calendar-main">
         <header class="calendar-header">
-            <button class="arrow" (click)="changeMonth(-1)"><img src="assets/arrow_left.svg" alt="left"
-                    class="icon" /></button>
-            <h2>{{ getMonthName() }} {{ year }}</h2>
-            <button class="arrow" (click)="changeMonth(1)"><img src="assets/arrow_right.svg" alt="right"
-                    class="icon" /></button>
+            <div class="header-title">
+                <h2>{{ getMonthName() }} {{ year }}</h2>
+                <button class="month-button" (click)="toggleMonthMenu()">Month <ion-icon name="chevron-down-outline"></ion-icon></button>
+                <button class="reservation-button">Reservation <ion-icon name="add-circle"></ion-icon></button>
+            </div>
         </header>
+
+        <!-- Menu s mesiacmi -->
+        <div *ngIf="showMonthMenu" class="month-menu">
+            <div *ngFor="let monthName of months; let i = index" (click)="selectMonth(i)">
+                {{ monthName }}
+            </div>
+        </div>
 
         <div class="calendar-grid">
             <!-- Weekday names -->
             <div *ngFor="let day of weekdays" class="calendar-cell-header">{{ day }}</div>
-
             <!-- Calendar days -->
-            <div *ngFor="let day of daysWithPadding" class="calendar-cell" [class.today]="isToday(day)"
-                [class.empty]="day === null">
-                {{ day || '' }}
+            <div *ngFor="let day of daysWithPadding" class="calendar-cell" [class.today]="isToday(day)" [class.empty]="day === null">
+                <span class="day-number">{{ day || '' }}</span>
+                <div class="events-in-cell">
+                    <ng-container *ngIf="day && isToday(day)">
+                        <div *ngFor="let event of eventsToday" class="event-entry colored-event-entry" [style.backgroundColor]="event.color">
+                            <!-- <span class="event-dot" [style.backgroundColor]="event.color"></span> -->
+                            <span class="event-title-in-cell">{{ event.title }}</span>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="day && day === tomorrowDate && month === today.getMonth() && year === today.getFullYear()">
+                        <div *ngFor="let event of eventsTomorrow" class="event-entry colored-event-entry" [style.backgroundColor]="event.color">
+                           <!-- <span class="event-dot" [style.backgroundColor]="event.color"></span> -->
+                           <span class="event-title-in-cell">{{ event.title }}</span>
+                       </div>
+                   </ng-container>
+                </div>
             </div>
         </div>
     </main>
 
     <div class="calendar-sidebar">
-        <h3> Up-Coming Events</h3>
+        <h3>Up-Coming Events</h3>
         <div class="event-list">
             <h4>Today</h4>
             <div *ngFor="let event of eventsToday" class="event-item">
