@@ -17,8 +17,10 @@ export class Tab2Page {
   newemail = '';
   phone = '';
   isSignUp = false;
+  isLogIn = true;
   loginFailed = false;
   hidePassword = true;
+  isPasswordReset = false;
   
   constructor(private authService: AuthService) {}
 
@@ -43,10 +45,14 @@ export class Tab2Page {
 
   toggleForm() {
     this.isSignUp = !this.isSignUp;
+    this.isLogIn = !this.isLogIn;
+    this.isPasswordReset = false;
   }
 
   passwordReset() {
-    
+    this.isPasswordReset = true;
+    this.isSignUp = false;
+    this.isLogIn = false;
   }
 
   showReservations() {
@@ -59,5 +65,23 @@ export class Tab2Page {
 
   showPrivacy() {
     
+  }
+
+  sendPasswordReset() {
+    if (!this.email) {
+      alert('Please enter your email.');
+      return;
+    }
+  
+    alert(`Reset link sent to ${this.email}`);
+    this.isPasswordReset = false;
+    this.isSignUp = false;
+    this.isLogIn = true;
+  }
+
+  showLogin() {
+    this.isPasswordReset = false;
+    this.isSignUp = false;
+    this.isLogIn = true;
   }
 }

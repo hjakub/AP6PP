@@ -12,11 +12,10 @@
   </ion-header>
 
   <ion-list>
-<!-- 
-    // Login Form
+    <!-- Login Form -->
     <ng-container *ngIf="!isLoggedIn(); else accountDetails">
       <h1>Rezervace+</h1>
-      <ng-container *ngIf="!isSignUp">
+      <ng-container *ngIf="isLogIn">
         <h2>Log in</h2>
         <div class="t-form">
           <label for="email">Email <span class="required">*</span></label>
@@ -34,45 +33,58 @@
           <p>Don't have an account yet? <a class="clickable" (click)="toggleForm()">Sign up</a></p>
         </div>
       </ng-container>
+
+      <!-- Sign-up Form -->
+      <ng-container *ngIf="isSignUp">
+        <h2>Create an account</h2>
+        <div class="t-form">
+          <label for="name">Name <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="name" id="name" type="text" placeholder="Enter your name" required>
+          </div>
+          <label for="name">Surname <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="surname" id="surname" type="text" placeholder="Enter your surname" required>
+          </div>
+          <label for="new-email">Email <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="newemail" id="new-email" type="email" placeholder="Enter your email" required>
+          </div>
+          <label for="phone">Phone <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="phone" id="phone" type="phone" placeholder="Enter your phone number" required>
+          </div>
+          <label for="enter-password">Password <span class="required">*</span></label>
+          <div class="container">
+              <input id="enter-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="enterpassword" placeholder="Enter your password" required>
+              <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
+          </div>
+          <label for="confirm-password">Repeat password <span class="required">*</span></label>
+          <div class="container">
+            <input id="confirm-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="confirmpassword" placeholder="Confirm your password" required>
+            <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
+          </div>
+          <ion-button>Sign up</ion-button>
+          <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
+        </div>
+      </ng-container>
+
+      <!-- Password Reset Form -->
+      <ng-container *ngIf="isPasswordReset">
+        <h2>Reset your password</h2>
+        <div class="t-form">
+          <label for="reset-email">Email <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="email" id="reset-email" type="email" placeholder="Enter your email" required>
+          </div>
+          <ion-button (click)="sendPasswordReset()">Send Reset Link</ion-button>
+          <p>Remembered your password? <a class="clickable" (click)="showLogin()">Log in</a></p>
+        </div>
+      </ng-container>
     </ng-container>
 
-    // Sign-up Form
-    <ng-container *ngIf="isSignUp">
-      <h2>Create an account</h2>
-      <div class="t-form">
-        <label for="name">Name <span class="required">*</span></label>
-        <div class="container">
-          <input [(ngModel)]="name" id="name" type="text" placeholder="Enter your name" required>
-        </div>
-        <label for="name">Surname <span class="required">*</span></label>
-        <div class="container">
-          <input [(ngModel)]="surname" id="surname" type="text" placeholder="Enter your surname" required>
-        </div>
-        <label for="new-email">Email <span class="required">*</span></label>
-        <div class="container">
-          <input [(ngModel)]="newemail" id="new-email" type="email" placeholder="Enter your email" required>
-        </div>
-        <label for="phone">Phone <span class="required">*</span></label>
-        <div class="container">
-          <input [(ngModel)]="phone" id="phone" type="phone" placeholder="Enter your phone number" required>
-        </div>
-        <label for="enter-password">Password <span class="required">*</span></label>
-        <div class="container">
-            <input id="enter-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="enterpassword" placeholder="Enter your password" required>
-            <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
-        </div>
-        <label for="confirm-password">Repeat password <span class="required">*</span></label>
-        <div class="container">
-          <input id="confirm-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="confirmpassword" placeholder="Confirm your password" required>
-          <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
-        </div>
-        <ion-button>Sign up</ion-button>
-        <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
-      </div>
-    </ng-container>
--->
     <!-- Logged-in User -->
-    <!-- <ng-template #accountDetails> -->
+    <ng-template #accountDetails>
       <div class="profile-header">
         <div class="avatar">
           <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
@@ -94,9 +106,7 @@
         <p><a (click)="showPrivacy()">Privacy</a></p>
         <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
       </div>
-    <!--</ng-template>-->
-
-     
+    </ng-template>
 
   </ion-list>
 </ion-content>
