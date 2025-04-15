@@ -85,27 +85,171 @@
 
     <!-- Logged-in User -->
     <ng-template #accountDetails>
-      <div class="profile-header">
-        <div class="avatar">
-          <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
+      <ng-container *ngIf="profilePage">
+        <div class="profile-header">
+          <div class="avatar">
+            <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
+          </div>
+          <h2>Novak Djoković</h2>
         </div>
-        <h2>Novak Djoković</h2>
-      </div>
-      <div class="profile-details">
-        <ion-grid>
-          <ion-row>
-            <ion-col><b>420</b> days on Rezervace+</ion-col>
-            <ion-col>|</ion-col>
-            <ion-col><b>69</b> training days</ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-      <div class="profile-actions">
-        <p><a (click)="showReservations()">My Reservations</a></p>
-        <p><a (click)="showSettings()">Settings</a></p>
-        <p><a (click)="showPrivacy()">Privacy</a></p>
-        <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
-      </div>
+        <div class="profile-details">
+          <ion-grid>
+            <ion-row>
+              <ion-col><b>420</b> days on Rezervace+</ion-col>
+              <ion-col>|</ion-col>
+              <ion-col><b>69</b> training days</ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+        <div class="profile-actions">
+          <ion-card class="balance">
+            <ion-card-header>
+              <ion-card-subtitle>Account balance</ion-card-subtitle>
+              <ion-card-title>0 R,-</ion-card-title>
+            </ion-card-header>
+          
+            <ion-card-content>
+              <ion-button (click)="addFunds()" class="add-funds-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Add Funds</ion-button>
+            </ion-card-content>
+          </ion-card>
+          <p><a class="clickable" (click)="showEdit()">Edit profile</a></p>
+          <p><a class="clickable" (click)="showPrivacy()">Privacy</a></p>
+          <ion-button (click)="logout()" class="log-out-button">Log out</ion-button>
+        </div>
+      </ng-container>
+
+      <!-- Adding funds -->
+      <ng-container *ngIf="paymentPage">
+          <h2>Account balance</h2>
+          <h3 class="account-balance">Current account balance: <span class="required">0 R,-</span></h3>
+          <div class="paymentpage">
+            <ion-card class="package">
+              <ion-card-header>
+                <ion-card-title><strong>25 R,-</strong></ion-card-title>
+                <ion-card-title>100 Kč</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card class="package">
+              <ion-card-header>
+                <ion-card-title><strong>50 R,-</strong></ion-card-title>
+                <ion-card-title>200 Kč</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card class="package">
+              <ion-card-header>
+                <ion-card-title><strong>100 R,-</strong></ion-card-title>
+                <ion-card-title>400 Kč</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card class="package">
+              <ion-card-header>
+                <ion-card-title><strong>500 R,-</strong></ion-card-title>
+                <ion-card-title>1000 Kč</ion-card-title>
+              </ion-card-header>
+            
+              <ion-card-content>
+                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+              </ion-card-content>
+            </ion-card>
+          </div>
+          <div class="back-button-center">
+            <ion-button (click)="showProfile()" class="back-button"><ion-icon name="caret-back-circle-outline" class="icon-space"></ion-icon>Back to profile</ion-button>
+          </div>
+      </ng-container>
+
+      <!-- Privacy -->
+      <ng-container *ngIf="privacyPage">
+        <div class="privacy">
+          <h2>Privacy policy</h2>
+          <p>Rezervace+ ("we", "our", or "us") is committed to protecting your privacy.
+            This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application
+            ("App"). By using the App, you agree to the collection and use of information in accordance with this policy.</p>
+
+            <h3>1. Information We Collect</h3>
+
+            <h4>a. Information You Provide</h4>
+            <ul>
+              <li><strong>Account Information:</strong> When you sign up or log in, we may collect your name, email address, phone number, and password.</li>
+              <li><strong>Payment Details:</strong> If you make purchases, we may collect payment information, though this may be processed by third-party providers (e.g., Stripe, Google Pay).</li>
+              <li><strong>Other Information:</strong> Any data you voluntarily provide via forms or in-app feedback.</li>
+            </ul>
+          
+            <h4>b. Automatically Collected Information</h4>
+            <ul>
+              <li><strong>Usage Data:</strong> We may collect data about how you interact with the app (e.g., pages visited, features used).</li>
+              <li><strong>Device Information:</strong> Device type, operating system, IP address, app version, and crash logs.</li>
+            </ul>
+          
+            <h3>2. How We Use Your Information</h3>
+            <ul>
+              <li>Provide and maintain the App.</li>
+              <li>Improve user experience and app performance.</li>
+              <li>Communicate with you regarding updates, support, or promotional content (if opted-in).</li>
+              <li>Ensure security and prevent fraud.</li>
+            </ul>
+          
+            <h3>3. Sharing Your Information</h3>
+            <p>We do <strong>not sell</strong> or rent your personal data. We may share information with:</p>
+            <ul>
+              <li><strong>Service Providers:</strong> To help us operate or analyze the App.</li>
+              <li><strong>Legal Authorities:</strong> When required by law or to protect rights and safety.</li>
+            </ul>
+          
+            <h3>4. Data Security</h3>
+            <p>We use administrative, technical, and physical safeguards to protect your information. However, no method of transmission or storage is 100% secure, and we cannot guarantee absolute security.</p>
+          
+            <h3>5. Your Rights and Choices</h3>
+            <ul>
+              <li>You can access, update, or delete your personal information by contacting us.</li>
+              <li>You can opt out of marketing communications at any time.</li>
+              <li>You may disable cookies or analytics tracking if applicable.</li>
+            </ul>
+          <ion-button class="back-button" (click)="showProfile()"><ion-icon name="caret-back-circle-outline" class="icon-space"></ion-icon>Back to profile</ion-button>
+        </div>
+      </ng-container>
+
+      <!-- Edit profile -->
+      <ng-container *ngIf="editPage">
+        <h1>Rezervace+</h1>
+        <h2>Edit profile</h2>
+        <div class="t-form">
+          <label for="editname">Name <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="editname" id="editname" type="text" placeholder="Enter your name" required>
+          </div>
+          <label for="editname">Surname <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="editsurname" id="editsurname" type="text" placeholder="Enter your surname" required>
+          </div>
+          <label for="editemail">Email <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="editemail" id="editemail" type="email" placeholder="Enter your email" required>
+          </div>
+          <label for="editphone">Phone <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="editphone" id="editphone" type="phone" placeholder="Enter your phone number" required>
+          </div>
+          <div class="edit-buttons">
+            <ion-button class="save-btn" (click)="showProfile()">Save changes</ion-button>
+            <ion-button class="discard-btn" (click)="showProfile()">Discard changes</ion-button>
+          </div>
+        </div>
+      </ng-container>
     </ng-template>
 
   </ion-list>

@@ -21,6 +21,15 @@ export class Tab2Page {
   loginFailed = false;
   hidePassword = true;
   isPasswordReset = false;
+  profilePage = true;
+  paymentPage = false;
+  privacyPage = false;
+  editPage = false;
+
+  editname = 'Novak'
+  editsurname = 'Djoković'
+  editemail = 'djokovic@gmail.com'
+  editphone = '+420111111111'
   
   constructor(private authService: AuthService) {}
 
@@ -55,16 +64,32 @@ export class Tab2Page {
     this.isLogIn = false;
   }
 
-  showReservations() {
-    
-  }
-
-  showSettings() {
-    
+  showEdit() {
+    this.paymentPage = false;
+    this.profilePage = false;
+    this.privacyPage = false;
+    this.editPage = true;
   }
 
   showPrivacy() {
-    
+    this.paymentPage = false;
+    this.profilePage = false;
+    this.privacyPage = true;
+    this.editPage = false;
+  }
+
+  showProfile() {
+    this.paymentPage = false;
+    this.profilePage = true;
+    this.privacyPage = false;
+    this.editPage = false;
+  }
+
+  addFunds() {
+    this.paymentPage = true;
+    this.profilePage = false;
+    this.privacyPage = false;
+    this.editPage = false;
   }
 
   sendPasswordReset() {

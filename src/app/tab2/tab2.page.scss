@@ -33,8 +33,13 @@ img {
 .profile-details {
     text-align: center;
     width: 50%;
-    max-width: 400px;
+    max-width: 500px;
     justify-self: center;
+}
+
+.balance {
+    margin-bottom: 30px;
+    padding: 10px;
 }
 
 .log-out-button {
@@ -104,4 +109,51 @@ input:focus {
 
 .required {
     color: #EA2839;
+}
+
+.privacy {
+    width: 80%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.privacy .back-button, .privacy h2 {
+    justify-self: left;
+    margin-top: 30px;
+}
+
+.icon-space {
+    margin-right: 8px;
+}
+
+.save-btn {
+    --background: #46505A !important;
+}
+
+.paymentpage {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 20px;
+}
+  
+.package {
+    padding: 10px;
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.account-balance {
+    justify-self: center;
+}
+
+.back-button-center {
+    justify-self: center;
+    margin-top: 30px;
+}
+
+.purchase-button {
+    width: 100%;
+    display: flex;
 }
