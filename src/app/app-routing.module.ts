@@ -5,6 +5,10 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'email-verification',
+    loadChildren: () => import('./email-verification/email-verification.module').then( m => m.EmailVerificationPageModule)
   }
 ];
 @NgModule({

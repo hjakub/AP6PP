@@ -48,6 +48,10 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/login`, payload);
   }
 
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/verify-email?token=${token}`);
+  }
+
   logout() {
     localStorage.removeItem('token');
     this._isLoggedIn$.next(false);
