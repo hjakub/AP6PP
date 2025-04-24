@@ -10,7 +10,8 @@ import { AuthService } from '../services/auth.service';
 export class Tab3Page {
   constructor(private authService: AuthService) {}
 
+  /*
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
-  }
+  }*/
 }

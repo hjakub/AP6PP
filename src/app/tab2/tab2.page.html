@@ -38,6 +38,10 @@
       <ng-container *ngIf="isSignUp">
         <h2>Create an account</h2>
         <div class="t-form">
+          <label for="name">Username <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="username" id="username" type="text" placeholder="Enter your username" required>
+          </div>
           <label for="name">Name <span class="required">*</span></label>
           <div class="container">
             <input [(ngModel)]="name" id="name" type="text" placeholder="Enter your name" required>
@@ -64,7 +68,7 @@
             <input id="confirm-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="confirmpassword" placeholder="Confirm your password" required>
             <button type="button" class="toggle-password" (click)="hidePassword = !hidePassword">👁</button>
           </div>
-          <ion-button>Sign up</ion-button>
+          <ion-button (click)="signup()">Sign up</ion-button>
           <p>Already have an account? <a class="clickable" (click)="toggleForm()">Log in</a></p>
         </div>
       </ng-container>

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -12,6 +14,7 @@ export class Tab2Page {
   password = '';
   enterpassword = '';
   confirmpassword = '';
+  username = '';
   name = '';
   surname = '';
   newemail = '';
@@ -25,33 +28,126 @@ export class Tab2Page {
   paymentPage = false;
   privacyPage = false;
   editPage = false;
+  isLoading = false;
 
   editname = 'Novak'
   editsurname = 'Djoković'
   editemail = 'djokovic@gmail.com'
   editphone = '+420111111111'
   
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private userService: UserService, private loadingController: LoadingController, private toastController: ToastController) {}
 
   login() {
-    if (this.authService.login(this.email, this.password)) {
-      this.loginFailed = false;
-    } else {
-      this.loginFailed = true;
-      alert('Invalid email or password.');
-    }
+    this.authService.loginUser({ usernameOrEmail: this.email, password: this.password }).subscribe({
+      next: (response) => {
+        console.log('Login success:', response);
+        if (response && response.token) {
+          this.authService.setToken(response.token);
+          this.loginFailed = false;
+          this.loadUserData();
+          this.presentToast('Login successful.', 'success');
+        } else {
+          this.loginFailed = true;
+          this.presentToast('Unexpected response from server.', 'danger');
+        }
+      },
+      error: (err) => {
+        this.loginFailed = true;
+        console.error('Login failed:', err);
+        this.presentToast(
+          'Login failed: ' +
+          (err.error?.message || err.message || 'Unknown error'),
+          'danger'
+        );
+      }
+    });
   }
 
   logout() {
     this.authService.logout();
     this.email = '';
     this.password = '';
+    this.loginFailed = false;
   }
 
   isLoggedIn(): boolean {
-    return this.authService.isLoggedIn();
+    return !!localStorage.getItem('token');
   }
 
+  loadUserData() {
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.username = user?.userName || '';
+        this.name = user?.firstName || '';
+        this.surname = user?.lastName || '';
+        this.phone = user?.phoneNumber || '';
+        this.newemail = user?.email || '';
+      },
+      error: (err) => {
+        console.error('Failed to load user data:', err);
+      }
+    });
+  }
+
+  async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }
+
+  async signup() {
+    if (!this.username || !this.name || !this.surname || !this.newemail || !this.phone || !this.enterpassword || !this.confirmpassword) {
+      this.presentToast('Please fill in all required fields.', 'warning');
+      return;
+    }
+  
+    if (this.enterpassword !== this.confirmpassword) {
+      this.presentToast('Passwords do not match.', 'warning');
+      return;
+    }
+  
+    this.isLoading = true;
+  
+    const loading = await this.loadingController.create({
+      message: 'Creating account...',
+      spinner: 'crescent',
+      backdropDismiss: false
+    });
+  
+    await loading.present();
+  
+    const newUser = {
+      userName: this.username,
+      firstName: this.name,
+      lastName: this.surname,
+      email: this.newemail,
+      password: this.enterpassword
+    };
+  
+    this.authService.registerUser(newUser).subscribe({
+      next: async () => {
+        this.isLoading = false;
+        await loading.dismiss();
+        this.presentToast('Account created successfully! Check your email for confirmation link.', 'success');
+        this.toggleForm();
+      },
+      error: async (err) => {
+        this.isLoading = false;
+        await loading.dismiss();
+        console.error('Registration failed:', err);
+        this.presentToast(
+          'Registration failed: ' +
+          (err.error?.message || err.message || 'Unknown error'),
+          'danger'
+        );
+      }
+    });
+  }
+  
   toggleForm() {
     this.isSignUp = !this.isSignUp;
     this.isLogIn = !this.isLogIn;
@@ -94,11 +190,11 @@ export class Tab2Page {
 
   sendPasswordReset() {
     if (!this.email) {
-      alert('Please enter your email.');
+      this.presentToast('Please enter your email.', 'warning');
       return;
     }
   
-    alert(`Reset link sent to ${this.email}`);
+    this.presentToast(`Reset link sent to ${this.email}`, 'success');
     this.isPasswordReset = false;
     this.isSignUp = false;
     this.isLogIn = true;
