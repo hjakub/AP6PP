@@ -13,8 +13,8 @@ import { EmailVerificationPage } from './email-verification.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    EmailVerificationPageRoutingModule
+    EmailVerificationPageRoutingModule,
+    EmailVerificationPage
   ],
-  declarations: [EmailVerificationPage]
 })
 export class EmailVerificationPageModule {}

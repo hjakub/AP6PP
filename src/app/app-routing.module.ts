@@ -7,7 +7,7 @@ const routes: Routes = [
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
   {
-    path: 'email-verification',
+    path: 'email_verification',
     loadChildren: () => import('./email-verification/email-verification.module').then( m => m.EmailVerificationPageModule)
   }
 ];

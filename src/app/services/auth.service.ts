@@ -29,7 +29,7 @@ export class AuthService {
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { RegisterPayload } from './interfaces/registerPayload';
 import { LoginPayload } from './interfaces/loginPayload';
 
@@ -45,7 +45,13 @@ export class AuthService {
   }
 
   loginUser(payload: LoginPayload): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, payload);
+    return this.http.post(`${this.baseUrl}/login`, payload).pipe(
+      tap((response: any) => {
+        if (response?.success) {
+          this.setToken(response.data);
+        }
+      })
+    );
   }
 
   verifyEmail(token: string): Observable<any> {

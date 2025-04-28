@@ -33,7 +33,7 @@ export class Tab2Page {
   editname = 'Novak'
   editsurname = 'Djoković'
   editemail = 'djokovic@gmail.com'
-  editphone = '+420111111111'
+  editphone = '+420691337420'
   
   constructor(private authService: AuthService, private userService: UserService, private loadingController: LoadingController, private toastController: ToastController) {}
 
@@ -44,11 +44,13 @@ export class Tab2Page {
         if (response && response.token) {
           this.authService.setToken(response.token);
           this.loginFailed = false;
-          this.loadUserData();
-          this.presentToast('Login successful.', 'success');
+          this.loadUserData();       
+          this.isLogIn = false;
+          this.isSignUp = false;
+          this.isPasswordReset = false;
+          this.profilePage = true;
         } else {
-          this.loginFailed = true;
-          this.presentToast('Unexpected response from server.', 'danger');
+          this.presentToast('Login successful.', 'success');
         }
       },
       error: (err) => {
@@ -68,6 +70,7 @@ export class Tab2Page {
     this.email = '';
     this.password = '';
     this.loginFailed = false;
+    this.presentToast('Succesfully logged out.', 'success');
   }
 
   isLoggedIn(): boolean {

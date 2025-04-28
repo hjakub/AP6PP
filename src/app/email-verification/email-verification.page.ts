@@ -1,37 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-email-verification',
+  selector: 'app-verification',
+  imports: [CommonModule],
   templateUrl: './email-verification.page.html',
-  styleUrls: ['./email-verification.page.scss'],
-  standalone: false,
+  styleUrl: './email-verification.page.scss'
 })
-export class EmailVerificationPage implements OnInit {
-  message: string = 'Ověřuji e-mail...';
-
+export class EmailVerificationPage {
+  verified: boolean = false;
+  
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService
-  ) {}
+    private http: HttpClient
+  ){}
 
-  ngOnInit() {
+  submit() {
+    console.log("submit");
     this.route.queryParams.subscribe(params => {
+      const userId = params['userId'];
       const token = params['token'];
-      if (token) {
-        this.authService.verifyEmail(token).subscribe({
-          next: () => {
-            this.message = 'E-mail úspěšně ověřen. Můžeš se přihlásit.';
-          },
-          error: (err) => {
-            this.message = 'Ověření e-mailu selhalo nebo odkaz vypršel.';
-            console.error(err);
-          }
-        });
-      } else {
-        this.message = 'Chybí ověřovací token.';
-      }
+      console.log(params);
+      const baseUrl = 'http://localhost:8005/api/auth/verify-email';
+      const url = `${baseUrl}/${encodeURIComponent(userId)}/${encodeURIComponent(token)}`;
+      console.log("link: ", url);
+      this.http.post(url, null).subscribe({
+        next: () => {alert('Email is verified'),
+          this.verified = true;
+        },
+        error: (err) => {
+          console.error(err);
+          alert('Error: ' + (err.error?.message || 'unexpected error'));
+        }
+      });
     });
   }
 }
