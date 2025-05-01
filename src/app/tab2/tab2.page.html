@@ -94,7 +94,7 @@
           <div class="avatar">
             <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
           </div>
-          <h2>Novak Djoković</h2>
+          <h2>{{ name }} {{ surname }}</h2>
         </div>
         <div class="profile-details">
           <ion-grid>
@@ -109,7 +109,7 @@
           <ion-card class="balance">
             <ion-card-header>
               <ion-card-subtitle>Account balance</ion-card-subtitle>
-              <ion-card-title>0 R,-</ion-card-title>
+              <ion-card-title>{{ balance }} R,-</ion-card-title>
             </ion-card-header>
           
             <ion-card-content>
@@ -125,7 +125,7 @@
       <!-- Adding funds -->
       <ng-container *ngIf="paymentPage">
           <h2>Account balance</h2>
-          <h3 class="account-balance">Current account balance: <span class="required">0 R,-</span></h3>
+          <h3 class="account-balance">Current account balance: <span class="required">{{ balance }} R,-</span></h3>
           <div class="paymentpage">
             <ion-card class="package">
               <ion-card-header>
@@ -134,7 +134,9 @@
               </ion-card-header>
             
               <ion-card-content>
-                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+                <ion-button class="purchase-button" (click)="purchase(25)">
+                  <ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase
+                </ion-button>
               </ion-card-content>
             </ion-card>
 
@@ -145,7 +147,9 @@
               </ion-card-header>
             
               <ion-card-content>
-                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+                <ion-button class="purchase-button" (click)="purchase(50)">
+                  <ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase
+                </ion-button>
               </ion-card-content>
             </ion-card>
 
@@ -156,7 +160,9 @@
               </ion-card-header>
             
               <ion-card-content>
-                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+                <ion-button class="purchase-button" (click)="purchase(100)">
+                  <ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase
+                </ion-button>
               </ion-card-content>
             </ion-card>
 
@@ -167,7 +173,9 @@
               </ion-card-header>
             
               <ion-card-content>
-                <ion-button class="purchase-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase</ion-button>
+                <ion-button class="purchase-button" (click)="purchase(500)">
+                  <ion-icon name="add-circle" class="icon-space"></ion-icon>Purchase
+                </ion-button>
               </ion-card-content>
             </ion-card>
           </div>

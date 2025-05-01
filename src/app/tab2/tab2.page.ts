@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { PaymentService } from '../services/payment.service';
 
 @Component({
   selector: 'app-tab2',
@@ -9,6 +10,7 @@ import { LoadingController, ToastController } from '@ionic/angular';
   styleUrls: ['tab2.page.scss'],
   standalone: false,
 })
+
 export class Tab2Page {
   email = '';
   password = '';
@@ -19,6 +21,8 @@ export class Tab2Page {
   surname = '';
   newemail = '';
   phone = '';
+  balance = 0;
+  roleId: number | null = null;
   isSignUp = false;
   isLogIn = true;
   loginFailed = false;
@@ -34,8 +38,30 @@ export class Tab2Page {
   editsurname = 'Djoković'
   editemail = 'djokovic@gmail.com'
   editphone = '+420691337420'
-  
-  constructor(private authService: AuthService, private userService: UserService, private loadingController: LoadingController, private toastController: ToastController) {}
+
+  constructor(
+    private authService: AuthService, 
+    private userService: UserService, 
+    private loadingController: LoadingController, 
+    private toastController: ToastController,
+    private paymentService: PaymentService
+  ) {}
+
+  loadBalance() {
+    const userId = this.userService.getUserIdFromToken();
+    if (!userId) {
+      this.presentToast('Could not identify user.', 'danger');
+      return;
+    }
+    this.userService.getUserById(userId).subscribe({
+      next: (user) => {
+        this.balance = user?.balance ?? 0;
+      },
+      error: () => {
+        this.balance = 0;
+      }
+    });
+  }
 
   login() {
     this.authService.loginUser({ usernameOrEmail: this.email, password: this.password }).subscribe({
@@ -85,12 +111,51 @@ export class Tab2Page {
         this.surname = user?.lastName || '';
         this.phone = user?.phoneNumber || '';
         this.newemail = user?.email || '';
+        this.roleId = user?.roleId ?? null;
       },
       error: (err) => {
         console.error('Failed to load user data:', err);
+        this.roleId = null;
       }
     });
   }
+
+  purchase(amount: number) {
+    const userId = this.userService.getUserIdFromToken();
+
+    if (userId === null) {
+        this.presentToast('Could not identify user.', 'danger');
+        return;
+    }
+    if (this.roleId === null) {
+        this.presentToast('User role information is missing. Cannot complete purchase.', 'danger');
+        // Optionally, try reloading user data here if appropriate
+        // this.loadUserData();
+        return;
+    }
+
+    const payload = {
+      userId: userId,
+      roleId: this.roleId,
+      creditBalance: amount
+    };
+
+    this.paymentService.createBalance(payload).subscribe({
+      next: (response) => {
+        this.presentToast(`Added ${amount} R,- to your balance!`, 'success');
+        if (response && typeof response.balance === 'number') {
+            this.balance = response.balance;
+        } else {
+            this.loadBalance();
+        }
+      },
+      error: (err) => {
+        console.error('Create balance failed:', err);
+        this.presentToast('Payment failed: ' + (err.error?.message || 'Server error'), 'danger');
+      }
+    });
+  }
+
 
   async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
     const toast = await this.toastController.create({
