@@ -1,14 +1,14 @@
-#verify-block{
+#verify-block {
     max-width: 800px;
     margin: auto;
     padding-bottom: 10vw;
   }
 
-#block{
+#block {
   margin: 0pt 20pt;
 }
 
-.text{
+.text {
     font-family: "Source Sans 3";
     font-size: 16pt;
     font-weight: 700;
@@ -33,7 +33,7 @@
   background-color: #b71c1c;
 }
 
-#login{
+#login {
   background-color: rgba(70, 80, 90, 1);
   color: white;
   width: 100%;
@@ -45,11 +45,11 @@
   transition: background 0.3s ease-in-out;
 }
 
-#login:hover{
+#login:hover {
   background-color: rgb(40, 50, 60, 1);
 }
 
-#confirm{
+#confirm {
   background: #f2f2f2;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

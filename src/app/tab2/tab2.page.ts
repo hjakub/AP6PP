@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PaymentService } from '../services/payment.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tab2',
@@ -12,6 +13,7 @@ import { PaymentService } from '../services/payment.service';
 })
 
 export class Tab2Page {
+  emailorusername = ''
   email = '';
   password = '';
   enterpassword = '';
@@ -39,12 +41,17 @@ export class Tab2Page {
   editemail = 'djokovic@gmail.com'
   editphone = '+420691337420'
 
-  constructor(
+  loggedName = '';
+  loggedSurname = '';
+  loggedEmail = '';
+
+  constructor (
     private authService: AuthService, 
     private userService: UserService, 
     private loadingController: LoadingController, 
     private toastController: ToastController,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private http: HttpClient,
   ) {}
 
   loadBalance() {
@@ -64,20 +71,23 @@ export class Tab2Page {
   }
 
   login() {
-    this.authService.loginUser({ usernameOrEmail: this.email, password: this.password }).subscribe({
+    if (!this.emailorusername || !this.password) {
+      this.presentToast('Please fill in all required fields.', 'warning');
+      return;
+    }
+    this.authService.loginUser({ usernameOrEmail: this.emailorusername, password: this.password }).subscribe({
       next: (response) => {
         console.log('Login success:', response);
-        if (response && response.token) {
-          this.authService.setToken(response.token);
-          this.loginFailed = false;
-          this.loadUserData();       
-          this.isLogIn = false;
-          this.isSignUp = false;
-          this.isPasswordReset = false;
-          this.profilePage = true;
-        } else {
-          this.presentToast('Login successful.', 'success');
-        }
+        this.authService.setToken(response.token);
+        this.loginFailed = false;
+        this.loadUserData();       
+        this.isLogIn = false;
+        this.isSignUp = false;
+        this.isPasswordReset = false;
+        this.profilePage = true;
+        console.log('Name:', this.loggedName);
+        console.log('Surname:', this.loggedSurname);
+        this.presentToast('Login successful.', 'success');
       },
       error: (err) => {
         this.loginFailed = true;
@@ -94,9 +104,16 @@ export class Tab2Page {
   logout() {
     this.authService.logout();
     this.email = '';
+    this.emailorusername = '';
     this.password = '';
     this.loginFailed = false;
+    this.loggedEmail = '';
+    this.isLogIn = true;
+    this.isSignUp = false;
+    this.isPasswordReset = false;
+    this.profilePage = false;
     this.presentToast('Succesfully logged out.', 'success');
+
   }
 
   isLoggedIn(): boolean {
@@ -112,6 +129,9 @@ export class Tab2Page {
         this.phone = user?.phoneNumber || '';
         this.newemail = user?.email || '';
         this.roleId = user?.roleId ?? null;
+        this.loggedName = user?.firstName || '';
+        this.loggedSurname = user?.lastName || '';
+        this.loggedEmail = user?.email || '';
       },
       error: (err) => {
         console.error('Failed to load user data:', err);
@@ -129,7 +149,6 @@ export class Tab2Page {
     }
     if (this.roleId === null) {
         this.presentToast('User role information is missing. Cannot complete purchase.', 'danger');
-        // Optionally, try reloading user data here if appropriate
         // this.loadUserData();
         return;
     }
@@ -193,6 +212,7 @@ export class Tab2Page {
       firstName: this.name,
       lastName: this.surname,
       email: this.newemail,
+      phoneNumber: this.phone,
       password: this.enterpassword
     };
   
@@ -202,6 +222,12 @@ export class Tab2Page {
         await loading.dismiss();
         this.presentToast('Account created successfully! Check your email for confirmation link.', 'success');
         this.toggleForm();
+        this.username = '';
+        this.name = '';
+        this.surname = '';
+        this.newemail = '';
+        this.phone = '';
+        this.enterpassword = '';
       },
       error: async (err) => {
         this.isLoading = false;
@@ -261,11 +287,22 @@ export class Tab2Page {
       this.presentToast('Please enter your email.', 'warning');
       return;
     }
-  
-    this.presentToast(`Reset link sent to ${this.email}`, 'success');
-    this.isPasswordReset = false;
-    this.isSignUp = false;
-    this.isLogIn = true;
+
+    const email = this.email;
+
+    console.log('Sending request to:', 'http://localhost:8005/api/auth/reset-password');
+    console.log('With body:', { email });
+    this.http.get('http://localhost:8005/api/auth/reset-password?email=' + email)
+      .subscribe({
+        next: (response) => {
+          console.log('Response from backend:', response);
+          this.presentToast('Reset email sent. Chack your inbox and spam folder.', 'success');
+        },
+        error: (err) => {
+          console.error('Error sending request:', err); 
+          this.presentToast('Something went wrong.', 'warning');
+        }
+      });
   }
 
   showLogin() {

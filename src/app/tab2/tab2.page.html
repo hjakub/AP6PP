@@ -18,9 +18,9 @@
       <ng-container *ngIf="isLogIn">
         <h2>Log in</h2>
         <div class="t-form">
-          <label for="email">Email <span class="required">*</span></label>
+          <label for="email">Email or username <span class="required">*</span></label>
           <div class="container">
-            <input [(ngModel)]="email" id="email" type="text" placeholder="Enter your email" required>
+            <input [(ngModel)]="emailorusername" id="emailorusername" type="text" placeholder="Enter your email or username" required>
           </div>
           <label for="password">Password <span class="required">*</span></label>
           <div class="container">
@@ -38,10 +38,6 @@
       <ng-container *ngIf="isSignUp">
         <h2>Create an account</h2>
         <div class="t-form">
-          <label for="name">Username <span class="required">*</span></label>
-          <div class="container">
-            <input [(ngModel)]="username" id="username" type="text" placeholder="Enter your username" required>
-          </div>
           <label for="name">Name <span class="required">*</span></label>
           <div class="container">
             <input [(ngModel)]="name" id="name" type="text" placeholder="Enter your name" required>
@@ -49,6 +45,10 @@
           <label for="name">Surname <span class="required">*</span></label>
           <div class="container">
             <input [(ngModel)]="surname" id="surname" type="text" placeholder="Enter your surname" required>
+          </div>
+          <label for="name">Username <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="username" id="username" type="text" placeholder="Enter your username" required>
           </div>
           <label for="new-email">Email <span class="required">*</span></label>
           <div class="container">
@@ -94,7 +94,7 @@
           <div class="avatar">
             <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
           </div>
-          <h2>{{ name }} {{ surname }}</h2>
+          <h2>{{ loggedName }} {{ loggedSurname }}</h2>
         </div>
         <div class="profile-details">
           <ion-grid>

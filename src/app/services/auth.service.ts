@@ -1,32 +1,3 @@
-/* Old dummy auth service
-import { Injectable } from '@angular/core';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  private mockUser = { email: 'test@test.com', password: 'test' };
-  private isAuthenticated = false;
-
-  login(email: string, password: string): boolean {
-    if (email === this.mockUser.email && password === this.mockUser.password) {
-      this.isAuthenticated = true;
-      localStorage.setItem('user', JSON.stringify(this.mockUser));
-      return true;
-    }
-    return false;
-  }
-
-  logout() {
-    this.isAuthenticated = false;
-    localStorage.removeItem('user');
-  }
-
-  isLoggedIn(): boolean {
-    return this.isAuthenticated || localStorage.getItem('user') !== null;
-  }
-} */
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
@@ -63,16 +34,41 @@ export class AuthService {
     this._isLoggedIn$.next(false);
   }
 
+  setSession(token: string, userId: number): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userId', userId.toString());
+    this._isLoggedIn$.next(true);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  clearSession(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    this._isLoggedIn$.next(false);
+  }
+
+  getUserId(): number | null {
+    const id = localStorage.getItem('userId');
+    return id ? parseInt(id, 10) : null;
+  }
+
   setToken(token: string) {
     localStorage.setItem('token', token);
     this._isLoggedIn$.next(true);
   }
 
-  get isLoggedIn() {
+  get isLoggedIn$() {
     return this._isLoggedIn$.asObservable();
   }
 
   private hasToken(): boolean {
     return !!localStorage.getItem('token');
+  }
+
+  resetPassword(payload: { newPassword: string; userId: string; token: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password`, payload);
   }
 }
