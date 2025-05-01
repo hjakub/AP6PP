@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { RegisterPayload } from './interfaces/registerPayload';
 import { LoginPayload } from './interfaces/loginPayload';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -32,6 +33,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     this._isLoggedIn$.next(false);
+    console.log('Token after logout:', localStorage.getItem('token'));
   }
 
   setSession(token: string, userId: number): void {
@@ -53,6 +55,18 @@ export class AuthService {
   getUserId(): number | null {
     const id = localStorage.getItem('userId');
     return id ? parseInt(id, 10) : null;
+  }
+
+  getUserIdFromToken(token: string): number | null {
+    try {
+      const decoded: any = jwtDecode(token);
+      console.log('Decoded token:', decoded);
+      const userId = decoded.userid;
+      return parseInt(userId);
+    } catch (err) {
+      console.error('Decoding error: ', err);
+      return null;
+    }
   }
 
   setToken(token: string) {

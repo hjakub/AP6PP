@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PaymentService } from '../services/payment.service';
 import { HttpClient } from '@angular/common/http';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-tab2',
@@ -44,6 +45,7 @@ export class Tab2Page {
   loggedName = '';
   loggedSurname = '';
   loggedEmail = '';
+  loggedInUser: any;
 
   constructor (
     private authService: AuthService, 
@@ -75,19 +77,37 @@ export class Tab2Page {
       this.presentToast('Please fill in all required fields.', 'warning');
       return;
     }
-    this.authService.loginUser({ usernameOrEmail: this.emailorusername, password: this.password }).subscribe({
-      next: (response) => {
-        console.log('Login success:', response);
-        this.authService.setToken(response.token);
-        this.loginFailed = false;
-        this.loadUserData();       
-        this.isLogIn = false;
-        this.isSignUp = false;
-        this.isPasswordReset = false;
-        this.profilePage = true;
-        console.log('Name:', this.loggedName);
-        console.log('Surname:', this.loggedSurname);
-        this.presentToast('Login successful.', 'success');
+  
+    this.authService.loginUser({
+      usernameOrEmail: this.emailorusername,
+      password: this.password
+    }).subscribe({
+      next: async (response) => {
+        const token = response.data;
+        const userId = this.authService.getUserIdFromToken(token); // correct usage
+  
+        if (token && userId) {
+          this.authService.setSession(token, userId);
+  
+          try {
+            const userInfo = await this.userService.getUserById(userId).toPromise();
+            this.loggedInUser = userInfo;
+            this.loggedName = userInfo?.firstName || '';
+            this.loggedSurname = userInfo?.lastName || '';
+          } catch (err) {
+            console.error('Failed to fetch user info:', err);
+          }
+  
+          this.loginFailed = false;
+          this.isLogIn = false;
+          this.isSignUp = false;
+          this.isPasswordReset = false;
+          this.profilePage = true;
+  
+          this.presentToast('Login successful.', 'success');
+        } else {
+          this.presentToast('Invalid token or user ID.', 'danger');
+        }
       },
       error: (err) => {
         this.loginFailed = true;
@@ -107,6 +127,8 @@ export class Tab2Page {
     this.emailorusername = '';
     this.password = '';
     this.loginFailed = false;
+    this.loggedName = '';
+    this.loggedSurname = '';
     this.loggedEmail = '';
     this.isLogIn = true;
     this.isSignUp = false;
@@ -217,7 +239,21 @@ export class Tab2Page {
     };
   
     this.authService.registerUser(newUser).subscribe({
-      next: async () => {
+      next: async (res) => {
+        console.log('Registration response:', res);
+  
+        const token = localStorage.getItem('token');
+        console.log('Token after registration:', token);
+  
+        if (token) {
+          try {
+            const decoded: any = jwtDecode(token);
+            console.log('Decoded token:', decoded);
+          } catch (e) {
+            console.error('Error decoding token:', e);
+          }
+        }
+  
         this.isLoading = false;
         await loading.dismiss();
         this.presentToast('Account created successfully! Check your email for confirmation link.', 'success');
