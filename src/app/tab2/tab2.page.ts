@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { LoadingController, ToastController } from '@ionic/angular';
@@ -13,7 +13,7 @@ import { jwtDecode } from 'jwt-decode';
   standalone: false,
 })
 
-export class Tab2Page {
+export class Tab2Page implements OnInit {
   emailorusername = ''
   email = '';
   password = '';
@@ -36,12 +36,14 @@ export class Tab2Page {
   privacyPage = false;
   editPage = false;
   isLoading = false;
-
-  editname = 'Novak'
-  editsurname = 'Djoković'
-  editemail = 'djokovic@gmail.com'
-  editphone = '+420691337420'
-
+  editname = '';
+  editsurname = '';
+  editusername = '';
+  editemail = '';
+  editphone = '';
+  editheight = '';
+  editweight = '';
+  editsex = '';
   loggedName = '';
   loggedSurname = '';
   loggedEmail = '';
@@ -55,6 +57,21 @@ export class Tab2Page {
     private paymentService: PaymentService,
     private http: HttpClient,
   ) {}
+
+  ngOnInit(): void {
+    const isLoggedIn = this.isLoggedIn();
+    if (isLoggedIn) {
+      this.profilePage = true;
+      this.isLogIn = false;
+      this.loadUserData();
+      this.loadBalance();
+    } else {
+      this.profilePage = false;
+      this.isLogIn = true;
+      this.isSignUp = false;
+      this.isPasswordReset = false;
+    }
+  }
 
   loadBalance() {
     const userId = this.userService.getUserIdFromToken();
@@ -84,7 +101,8 @@ export class Tab2Page {
     }).subscribe({
       next: async (response) => {
         const token = response.data;
-        const userId = this.authService.getUserIdFromToken(token); // correct usage
+        const userId = this.authService.getUserIdFromToken(token);
+        console.log(userId);
   
         if (token && userId) {
           this.authService.setSession(token, userId);
@@ -94,6 +112,14 @@ export class Tab2Page {
             this.loggedInUser = userInfo;
             this.loggedName = userInfo?.firstName || '';
             this.loggedSurname = userInfo?.lastName || '';
+            this.editname = userInfo?.firstName || '';
+            this.editsurname = userInfo?.lastName || '';
+            this.editusername = userInfo?.username || '';
+            this.editphone = userInfo?.phoneNumber || '';
+            this.editemail = userInfo?.email || '';
+            this.editweight = userInfo?.weight || '';
+            this.editheight = userInfo?.height || '';
+            this.editsex = userInfo?.sex || '';
           } catch (err) {
             console.error('Failed to fetch user info:', err);
           }
@@ -123,19 +149,8 @@ export class Tab2Page {
 
   logout() {
     this.authService.logout();
-    this.email = '';
-    this.emailorusername = '';
-    this.password = '';
-    this.loginFailed = false;
-    this.loggedName = '';
-    this.loggedSurname = '';
-    this.loggedEmail = '';
-    this.isLogIn = true;
-    this.isSignUp = false;
-    this.isPasswordReset = false;
-    this.profilePage = false;
+    this.clearProfile();
     this.presentToast('Succesfully logged out.', 'success');
-
   }
 
   isLoggedIn(): boolean {
@@ -154,6 +169,14 @@ export class Tab2Page {
         this.loggedName = user?.firstName || '';
         this.loggedSurname = user?.lastName || '';
         this.loggedEmail = user?.email || '';
+        this.editname = user?.firstName || '';
+        this.editsurname = user?.lastName || '';
+        this.editusername = user?.username || '';
+        this.editemail = user?.email || '';
+        this.editphone = user?.phoneNumber || '';
+        this.editweight = user?.weight || '';
+        this.editheight = user?.height || '';
+        this.editsex = user?.sex || '';;
       },
       error: (err) => {
         console.error('Failed to load user data:', err);
@@ -197,7 +220,6 @@ export class Tab2Page {
     });
   }
 
-
   async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
     const toast = await this.toastController.create({
       message,
@@ -209,7 +231,7 @@ export class Tab2Page {
   }
 
   async signup() {
-    if (!this.username || !this.name || !this.surname || !this.newemail || !this.phone || !this.enterpassword || !this.confirmpassword) {
+    if (!this.username || !this.name || !this.surname || !this.newemail || !this.enterpassword || !this.confirmpassword) {
       this.presentToast('Please fill in all required fields.', 'warning');
       return;
     }
@@ -234,7 +256,6 @@ export class Tab2Page {
       firstName: this.name,
       lastName: this.surname,
       email: this.newemail,
-      phoneNumber: this.phone,
       password: this.enterpassword
     };
   
@@ -328,7 +349,7 @@ export class Tab2Page {
 
     console.log('Sending request to:', 'http://localhost:8005/api/auth/reset-password');
     console.log('With body:', { email });
-    this.http.get('http://localhost:8005/api/auth/reset-password?email=' + email)
+    this.http.get(`/api/auth/reset-password?email=${email}`)
       .subscribe({
         next: (response) => {
           console.log('Response from backend:', response);
@@ -345,5 +366,62 @@ export class Tab2Page {
     this.isPasswordReset = false;
     this.isSignUp = false;
     this.isLogIn = true;
+  }
+
+  saveProfileChanges() {
+    const userId = this.userService.getUserIdFromToken();
+    console.log(userId);
+  
+    if (!userId) {
+      this.presentToast('User not identified.', 'danger');
+      return;
+    }
+
+    const updatedUser = {
+      firstName: this.editname,
+      lastName: this.editsurname,
+      userName: this.editusername,
+      email: this.editemail,
+      phoneNumber: this.editphone,
+      height: this.editheight,
+      weight: this.editweight,
+      sex: this.editsex
+    };
+  
+    this.userService.updateUser(userId, updatedUser).subscribe({
+      next: () => {
+        this.presentToast('Profile updated successfully!', 'success');
+        this.loadUserData();
+        this.showProfile();
+      },
+      error: (err) => {
+        console.error('Update failed:', err);
+        this.presentToast('Update failed: ' + (err.error?.message || 'Server error'), 'danger');
+      }
+    });
+  }
+
+  clearProfile() {
+    this.email = '';
+    this.newemail = '';
+    this.emailorusername = '';
+    this.password = '';
+    this.loginFailed = false;
+    this.loggedName = '';
+    this.loggedSurname = '';
+    this.loggedEmail = '';
+    this.isLogIn = true;
+    this.isSignUp = false;
+    this.isPasswordReset = false;
+    this.profilePage = false;
+    this.editname = '';
+    this.editphone = '';
+    this.editemail = '';
+    this.editsurname = '';
+    this.editsex = '';
+    this.editemail = '';
+    this.editusername = '';
+    this.name = '';
+    this.surname = '';
   }
 }

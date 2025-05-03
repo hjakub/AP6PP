@@ -30,14 +30,12 @@ img {
     margin-top: 50px;
 }
 
-.profile-details {
-    text-align: center;
-    width: 50%;
-    max-width: 500px;
-    justify-self: center;
+.balance {
+    margin-bottom: 30px;
+    padding: 10px;
 }
 
-.balance {
+.profd {
     margin-bottom: 30px;
     padding: 10px;
 }
@@ -61,7 +59,7 @@ label {
     color: #000000;
 }
   
-input {
+input, select {
     color: #000;
     background-color: #ffffff;
     width: 100%;

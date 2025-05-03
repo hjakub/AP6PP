@@ -33,10 +33,10 @@ export class UserService {
       console.warn('Token not found.');
       return null;
     }
-
+  
     try {
       const decoded: any = jwtDecode(token);
-      const userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      const userId = decoded.userid;
       return parseInt(userId);
     } catch (err) {
       console.error('Decoding error: ', err);
@@ -68,8 +68,8 @@ export class UserService {
     );
   }
 
-  updateUser(id: number, payload: UpdateUserRequest): Observable<any> {
-    return this.http.put(`${this.userBaseUrl}/${id}`, payload);
+  updateUser(userId: number, updatedData: any): Observable<any> {
+    return this.http.put(`${this.userBaseUrl}/${userId}`, updatedData);
   }
 
   resetPassword(userId: number, newPassword: string): Observable<any> {

@@ -54,10 +54,6 @@
           <div class="container">
             <input [(ngModel)]="newemail" id="new-email" type="email" placeholder="Enter your email" required>
           </div>
-          <label for="phone">Phone <span class="required">*</span></label>
-          <div class="container">
-            <input [(ngModel)]="phone" id="phone" type="phone" placeholder="Enter your phone number" required>
-          </div>
           <label for="enter-password">Password <span class="required">*</span></label>
           <div class="container">
               <input id="enter-password" [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="enterpassword" placeholder="Enter your password" required>
@@ -92,29 +88,30 @@
       <ng-container *ngIf="profilePage">
         <div class="profile-header">
           <div class="avatar">
-            <img src="../../assets/djokovic.jpg" alt="Profile picture" width="200" height="200">
+            <img src="../assets/blank.jpg" alt="Profile picture" width="200" height="200">
           </div>
           <h2>{{ loggedName }} {{ loggedSurname }}</h2>
         </div>
-        <div class="profile-details">
-          <ion-grid>
-            <ion-row>
-              <ion-col><b>420</b> days on Rezervace+</ion-col>
-              <ion-col>|</ion-col>
-              <ion-col><b>69</b> training days</ion-col>
-            </ion-row>
-          </ion-grid>
-        </div>
         <div class="profile-actions">
-          <ion-card class="balance">
+          <ion-card class="profd">
             <ion-card-header>
-              <ion-card-subtitle>Account balance</ion-card-subtitle>
-              <ion-card-title>{{ balance }} R,-</ion-card-title>
+              <ion-card-title>User details</ion-card-title>
+              <ion-card-subtitle><b>Username: </b>{{ editusername }}</ion-card-subtitle>
+              <ion-card-subtitle><b>Email: </b>{{ editemail }}</ion-card-subtitle>
+              <ion-card-subtitle><b>Phone: </b>{{ editphone }}</ion-card-subtitle>
+              <ion-card-subtitle><b>Sex: </b>{{ editsex }}</ion-card-subtitle>
+              <ion-card-subtitle><b>Weight: </b>{{ editweight }} kg</ion-card-subtitle>
+              <ion-card-subtitle><b>Height: </b>{{ editheight }} cm</ion-card-subtitle>
             </ion-card-header>
-          
-            <ion-card-content>
-              <ion-button (click)="addFunds()" class="add-funds-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Add Funds</ion-button>
-            </ion-card-content>
+            <ion-card class="balance">
+              <ion-card-header>
+                <ion-card-subtitle>Account balance</ion-card-subtitle>
+                <ion-card-title>{{ balance }} R,-</ion-card-title>
+              </ion-card-header>         
+              <ion-card-content>
+                <ion-button (click)="addFunds()" class="add-funds-button"><ion-icon name="add-circle" class="icon-space"></ion-icon>Add Funds</ion-button>
+              </ion-card-content>
+            </ion-card>
           </ion-card>
           <p><a class="clickable" (click)="showEdit()">Edit profile</a></p>
           <p><a class="clickable" (click)="showPrivacy()">Privacy</a></p>
@@ -248,16 +245,36 @@
           <div class="container">
             <input [(ngModel)]="editsurname" id="editsurname" type="text" placeholder="Enter your surname" required>
           </div>
+          <label for="editname">Username <span class="required">*</span></label>
+          <div class="container">
+            <input [(ngModel)]="editusername" id="editusername" type="text" placeholder="Enter your username" required>
+          </div>
           <label for="editemail">Email <span class="required">*</span></label>
           <div class="container">
             <input [(ngModel)]="editemail" id="editemail" type="email" placeholder="Enter your email" required>
           </div>
-          <label for="editphone">Phone <span class="required">*</span></label>
+          <label for="editphone">Phone</label>
           <div class="container">
             <input [(ngModel)]="editphone" id="editphone" type="phone" placeholder="Enter your phone number" required>
+          </div>      
+          <label for="editsex">Sex</label>
+          <div class="container">
+            <select [(ngModel)]="editsex" id="editsex">
+              <option value="">--</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <label for="editheight">Height (cm)</label>
+          <div class="container">
+            <input [(ngModel)]="editheight" id="editheight" type="number" placeholder="Enter your height in cm">
+          </div>
+          <label for="editweight">Weight (kg)</label>
+          <div class="container">
+            <input [(ngModel)]="editweight" id="editweight" type="number" placeholder="Enter your weight in kg">
           </div>
           <div class="edit-buttons">
-            <ion-button class="save-btn" (click)="showProfile()">Save changes</ion-button>
+            <ion-button class="save-btn" (click)="saveProfileChanges()">Save changes</ion-button>
             <ion-button class="discard-btn" (click)="showProfile()">Discard changes</ion-button>
           </div>
         </div>
