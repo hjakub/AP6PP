@@ -1,60 +1,102 @@
 <div class="calendar-container">
     <main class="calendar-main">
-        <header class="calendar-header">
-            <div class="header-title">
-                <h2>{{ getMonthName() }} {{ year }}</h2>
-                <button class="month-button" (click)="toggleMonthMenu()">Month <ion-icon name="chevron-down-outline"></ion-icon></button>
-                <button class="reservation-button">Reservation <ion-icon name="add-circle"></ion-icon></button>
-            </div>
-        </header>
-
-        <!-- Menu s mesiacmi -->
-        <div *ngIf="showMonthMenu" class="month-menu">
-            <div *ngFor="let monthName of months; let i = index" (click)="selectMonth(i)">
-                {{ monthName }}
-            </div>
+      <header class="calendar-header">
+        <div class="header-title">
+          <h2>{{ getMonthName() }} {{ year }}</h2>
+          <button class="month-button" (click)="toggleMonthMenu()">
+            Month <ion-icon name="chevron-down-outline"></ion-icon>
+          </button>
+          <button class="reservation-button">
+            Reservation <ion-icon name="add-circle"></ion-icon>
+          </button>
         </div>
-
-        <div class="calendar-grid">
-            <!-- Weekday names -->
-            <div *ngFor="let day of weekdays" class="calendar-cell-header">{{ day }}</div>
-            <!-- Calendar days -->
-            <div *ngFor="let day of daysWithPadding" class="calendar-cell" [class.today]="isToday(day)" [class.empty]="day === null">
-                <span class="day-number">{{ day || '' }}</span>
-                <div class="events-in-cell">
-                    <ng-container *ngIf="day && isToday(day)">
-                        <div *ngFor="let event of eventsToday" class="event-entry colored-event-entry" [style.backgroundColor]="event.color">
-                            <!-- <span class="event-dot" [style.backgroundColor]="event.color"></span> -->
-                            <span class="event-title-in-cell">{{ event.title }}</span>
-                        </div>
-                    </ng-container>
-                    <ng-container *ngIf="day && day === tomorrowDate && month === today.getMonth() && year === today.getFullYear()">
-                        <div *ngFor="let event of eventsTomorrow" class="event-entry colored-event-entry" [style.backgroundColor]="event.color">
-                           <!-- <span class="event-dot" [style.backgroundColor]="event.color"></span> -->
-                           <span class="event-title-in-cell">{{ event.title }}</span>
-                       </div>
-                   </ng-container>
-                </div>
-            </div>
+      </header>
+  
+      <div *ngIf="showMonthMenu" class="month-menu">
+        <div *ngFor="let m of months; let i = index" (click)="selectMonth(i)">
+          {{ m }}
         </div>
+      </div>
+  
+      <div class="calendar-grid">
+        <div *ngFor="let wd of weekdays" class="calendar-cell-header">
+          {{ wd }}
+        </div>
+  
+        <div *ngFor="let day of daysWithPadding"
+             class="calendar-cell"
+             [class.today]="isToday(day)"
+             [class.empty]="day===null">
+  
+          <span class="day-number">{{ day||'' }}</span>
+          <div class="events-in-cell">
+  
+            <ng-container *ngIf="day && isToday(day)">
+              <div *ngFor="let ev of eventsToday"
+                   class="event-entry colored-event-entry"
+                   [style.backgroundColor]="ev.color">
+                <span class="event-title-in-cell">{{ ev.title }}</span>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngIf="
+              day
+              && day === tomorrowDate
+              && month === today.getMonth()
+              && year === today.getFullYear()
+            ">
+              <div *ngFor="let ev of eventsTomorrow"
+                   class="event-entry colored-event-entry"
+                   [style.backgroundColor]="ev.color">
+                <span class="event-title-in-cell">{{ ev.title }}</span>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngFor="let course of courses">
+              <div *ngIf="isCourseOnDay(course, day)"
+                   class="event-entry colored-event-entry"
+                   [style.backgroundColor]="'blue'">
+                <span class="event-title-in-cell">
+                  {{ course.serviceName }}
+                </span>
+              </div>
+            </ng-container>
+  
+          </div>
+        </div>
+      </div>
     </main>
-
+  
     <div class="calendar-sidebar">
-        <h3>Up-Coming Events</h3>
-        <div class="event-list">
-            <h4>Today</h4>
-            <div *ngFor="let event of eventsToday" class="event-item">
-                <span class="dot" [style.backgroundColor]="event.color"></span>
-                <span>{{ event.title }}</span>
-                <span class="time">{{ event.time }}</span>
-            </div>
-
-            <h4>Tomorrow</h4>
-            <div *ngFor="let event of eventsTomorrow" class="event-item">
-                <span class="dot" [style.backgroundColor]="event.color"></span>
-                <span>{{ event.title }}</span>
-                <span class="time">{{ event.time }}</span>
-            </div>
+      <h3>Up-Coming Events</h3>
+      <div class="event-list">
+        <h4>Today</h4>
+        <div *ngFor="let ev of eventsToday" class="event-item">
+          <span class="dot" [style.backgroundColor]="ev.color"></span>
+          <span>{{ ev.title }}</span>
+          <span class="time">{{ ev.time }}</span>
         </div>
+  
+        <h4>Tomorrow</h4>
+        <div *ngFor="let ev of eventsTomorrow" class="event-item">
+          <span class="dot" [style.backgroundColor]="ev.color"></span>
+          <span>{{ ev.title }}</span>
+          <span class="time">{{ ev.time }}</span>
+        </div>
+      </div>
+      <h3>All Courses</h3>
+      <div class="courses-grid" *ngIf="courses.length; else noCourses">
+        <div *ngFor="let c of courses" class="course-card">
+          <h4>{{ c.serviceName }}</h4>
+          <p>Price: {{ c.price | currency }}</p>
+          <p>Room: {{ c.roomName }}</p>
+          <ion-button fill="solid" size="small" (click)="reserve(c.id)">
+            Enroll
+          </ion-button>
+        </div>
+      </div>
+      <ng-template #noCourses>
+        <p>No courses available.</p>
+      </ng-template>
     </div>
-</div>
+  </div>

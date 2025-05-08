@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { CourseService }          from 'src/app/services/course.service';
+import { Course }                 from 'src/app/services/interfaces/course';
+import { CommonModule }           from '@angular/common';
+import { IonicModule }            from '@ionic/angular';
 
 @Component({
   selector: 'app-calendar',
@@ -9,12 +11,10 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit {
   today = new Date();
-  currentDate = new Date();
   month: number = this.today.getMonth();
   year: number = this.today.getFullYear();
-
   tomorrowDate: number = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate() + 1).getDate();
 
   weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -23,6 +23,7 @@ export class CalendarComponent {
   eventsToday: { title: string, time: string, color: string }[] = [];
   eventsTomorrow: { title: string, time: string, color: string }[] = [];
 
+  courses: Course[] = [];
   showMonthMenu: boolean = false;
   months: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -30,11 +31,53 @@ export class CalendarComponent {
   ];
 
 
-  constructor() {
-    this.generateCalendar();
+  constructor(private courseService: CourseService) {}
+
+  ngOnInit() {
+    this.courseService.getAllCourses().subscribe(courses => {
+      this.courses = courses;
+      this.generateCalendar();
+      this.buildStaticEvents();
+      this.mergeCourseEvents();
+    });
+  }
+
+  private buildStaticEvents() {
     const [todayEvents, tomorrowEvents] = this.getEvents();
-    this.eventsToday = todayEvents;
+    this.eventsToday    = todayEvents;
     this.eventsTomorrow = tomorrowEvents;
+  } 
+
+  private mergeCourseEvents() {
+    const toDateString = (d:Date)=>d.toDateString();
+    const todayStr     = toDateString(this.today);
+    const tomorrow     = new Date(this.today);
+    tomorrow.setDate(this.today.getDate()+1);
+    const tomStr       = toDateString(tomorrow);
+
+    const courseEvents = this.courses.map(c => {
+      const d = new Date(c.start);
+      return {
+        dateStr: toDateString(d),
+        day:     d.getDate(),
+        month:   d.getMonth(),
+        year:    d.getFullYear(),
+        title:   c.serviceName,
+        time:    d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+        color:   'blue'
+      };
+    });
+
+    this.eventsToday.push(
+      ...courseEvents
+        .filter(e => e.dateStr === todayStr)
+        .map(e => ({ title: e.title, time: e.time, color: e.color }))
+    );
+    this.eventsTomorrow.push(
+      ...courseEvents
+        .filter(e => e.dateStr === tomStr)
+        .map(e => ({ title: e.title, time: e.time, color: e.color }))
+    );
   }
 
   toggleMonthMenu() {
@@ -103,4 +146,22 @@ export class CalendarComponent {
       this.year === this.today.getFullYear()
     );
   }
+
+  public isCourseOnDay(course: Course, day: number|null): boolean {
+    if (day == null) return false;
+    const d = new Date(course.start);
+    return (
+      d.getDate() === day &&
+      d.getMonth() === this.month &&
+      d.getFullYear() === this.year
+    );
+  }
+
+  reserve(courseId: number) {
+    this.courseService.reserveCourse(courseId).subscribe({
+      next: () => alert('Enrollment successful!'),
+      error: () => alert('Enrollment failed')
+    });
+  }
+
 }

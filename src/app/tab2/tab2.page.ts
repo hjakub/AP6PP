@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { LoadingController, ToastController } from '@ionic/angular';
-import { PaymentService } from '../services/payment.service';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
+import { PaymentService } from '../services/payment.service';
 
 @Component({
   selector: 'app-tab2',
@@ -187,37 +187,36 @@ export class Tab2Page implements OnInit {
 
   purchase(amount: number) {
     const userId = this.userService.getUserIdFromToken();
-
     if (userId === null) {
         this.presentToast('Could not identify user.', 'danger');
         return;
     }
     if (this.roleId === null) {
         this.presentToast('User role information is missing. Cannot complete purchase.', 'danger');
-        // this.loadUserData();
         return;
     }
 
     const payload = {
-      userId: userId,
+      userId,
       roleId: this.roleId,
-      creditBalance: amount
-    };
+      amount,
+      transactionId: Date.now().toString()
+    }
 
-    this.paymentService.createBalance(payload).subscribe({
-      next: (response) => {
+    this.paymentService.createPayment(payload).subscribe({
+      next: response => {
         this.presentToast(`Added ${amount} R,- to your balance!`, 'success');
-        if (response && typeof response.balance === 'number') {
-            this.balance = response.balance;
+        if (response?.data?.balance != null) {
+          this.balance = response.data.balance;
         } else {
-            this.loadBalance();
+          this.loadBalance();
         }
       },
-      error: (err) => {
-        console.error('Create balance failed:', err);
-        this.presentToast('Payment failed: ' + (err.error?.message || 'Server error'), 'danger');
+      error: err => {
+        console.error('Payment failed:', err);
+        this.presentToast('Payment failed: ' + (err.error?.message || 'Server error'),'danger');
       }
-    });
+    })
   }
 
   async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
