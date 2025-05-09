@@ -1,6 +1,24 @@
 {
-  "/api": {
+  "/api/auth": {
     "target": "http://localhost:8005",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/bookings": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:5185",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/user": {
+    "target": "http://localhost:5189",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

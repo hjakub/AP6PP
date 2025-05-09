@@ -200,7 +200,8 @@ export class Tab2Page implements OnInit {
       userId,
       roleId: this.roleId,
       amount,
-      transactionId: Date.now().toString()
+      transactionId: Date.now().toString(),
+      transactionType: 'credit' as 'credit' | 'reservation',
     }
 
     this.paymentService.createPayment(payload).subscribe({

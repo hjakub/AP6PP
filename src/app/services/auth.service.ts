@@ -85,4 +85,9 @@ export class AuthService {
   resetPassword(payload: { newPassword: string; userId: string; token: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/reset-password`, payload);
   }
+
+  getAuthHeader(): Record<string, string> | undefined {
+    const token = this.getToken();
+    return token ? { Authorization: `Bearer ${token}` } : undefined;
+  }
 }

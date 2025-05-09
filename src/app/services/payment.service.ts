@@ -8,11 +8,12 @@ export interface Payment {
   roleId: number;
   transactionId: string;
   amount: number;
+  transactionType: 'credit' | 'reservation';
 }
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
-  private baseUrl = 'http://localhost:5121/api';
+  private baseUrl = '/api';
   private getBalanceUrl = `${this.baseUrl}/getbalance`;
   private createPaymentUrl = `${this.baseUrl}/createpayment`;
 
@@ -23,7 +24,7 @@ export class PaymentService {
     if (!userId) {
       throw new Error('User ID not found in local storage');
     }
-    const url = this.getBalanceUrl + userId;
+    const url = `${this.getBalanceUrl}/${userId}`;
 
     return this.http.get<any>(url).pipe(
       map(response => response.data.creditBalance),
@@ -42,8 +43,4 @@ export class PaymentService {
       })
     );
   }
-
-
-
-
 }
