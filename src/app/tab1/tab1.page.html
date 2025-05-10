@@ -28,13 +28,20 @@
             <p><b>Price:</b> {{ c.price }} R,-</p>
             <p><b>Room:</b> {{ c.roomName }}</p>
           </div>
-        
-          <ng-container *ngIf="!enrollmentErrors[c.id]; else showError">
-            <ion-button (click)="enroll(c.id)">Enroll</ion-button>
+
+          <ng-container *ngIf="enrollmentErrors[c.id]">
+            <p class="status-message">
+              <ion-icon name="alert-outline"></ion-icon>
+              {{ enrollmentErrors[c.id] }}
+            </p>
           </ng-container>
         
-          <ng-template #showError>
-            <p class="status-message"><ion-icon name="alert-outline"></ion-icon>{{ enrollmentErrors[c.id] }}</p>
+          <ng-container *ngIf="!userBookings[c.id]; else cancelTemplate">
+            <ion-button (click)="enroll(c.id)">Enroll</ion-button>
+          </ng-container>
+
+          <ng-template #cancelTemplate>
+            <ion-button color="danger" (click)="cancelEnrollment(c.id)">Cancel</ion-button>
           </ng-template>
         
           <ion-button class="leftb" (click)="showInfo()">More info</ion-button>

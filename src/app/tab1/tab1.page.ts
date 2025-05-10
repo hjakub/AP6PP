@@ -10,14 +10,15 @@ import { ToastController } from '@ionic/angular';
   standalone: false,
 })
 export class Tab1Page implements OnInit {
-
   courses: Course[] = [];
   enrollmentErrors: { [courseId: number]: string } = {};
+  userBookings: { [courseId: number]: number } = {};
 
   constructor(private courseService: CourseService, private toastController: ToastController) {}
 
   ngOnInit() {
     this.loadCourses();
+    this.loadUserBookings();
   }
 
   loadCourses() {
@@ -27,6 +28,22 @@ export class Tab1Page implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load courses', err);
+      }
+    });
+  }
+
+  loadUserBookings() {
+    this.courseService.getUserBookings().subscribe({
+      next: (response) => {
+        const bookings = response.data || [];
+        this.userBookings = {};
+
+        bookings.forEach((b: any) => {
+          this.userBookings[b.serviceId] = b.id;
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load user bookings', err);
       }
     });
   }
@@ -44,40 +61,58 @@ export class Tab1Page implements OnInit {
     });
   }
 
-enroll(courseId: number) {
-  this.courseService.reserveCourse(courseId).subscribe({
-    next: (res) => {
-      console.log('Enrollment successful', res);
-      this.presentToast('Enrollment successful!', 'success');
-      delete this.enrollmentErrors[courseId];
-    },
-    error: (err) => {
-      const errorMessage = err?.error?.message || 'Enrollment failed';
-      console.error('Enrollment failed', err);
+  enroll(courseId: number) {
+    this.courseService.reserveCourse(courseId).subscribe({
+      next: () => {
+        const course = this.courses.find(c => c.id === courseId);
+        if (course) course.currentCapacity += 1;
+        this.presentToast('Enrollment successful!', 'success');
+        delete this.enrollmentErrors[courseId];
+        this.loadUserBookings();
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || 'Enrollment failed';
+        this.presentToast(errorMessage, 'danger');
 
-      this.presentToast(errorMessage, 'danger');
-
-      if (errorMessage === 'User already registered on this service') {
-        this.enrollmentErrors[courseId] = 'You are already registered on this service';
-      } else if (errorMessage === 'Service capacity is full') {
-        this.enrollmentErrors[courseId] = 'Service capacity is full';
-      } else {
-        this.enrollmentErrors[courseId] = 'Enrollment failed';
+        if (errorMessage === 'User already registered on this service') {
+          this.enrollmentErrors[courseId] = 'You are already registered on this service';
+        } else if (errorMessage === 'Service capacity is full') {
+          this.enrollmentErrors[courseId] = 'Service capacity is full';
+        } else {
+          this.enrollmentErrors[courseId] = 'Enrollment failed';
+        }
       }
-    }
-  });
-}
+    });
+  }
+
+  cancelEnrollment(courseId: number) {
+    const bookingId = this.userBookings[courseId];
+    if (!bookingId) return;
+
+    this.courseService.cancelBooking(bookingId).subscribe({
+      next: () => {
+        const course = this.courses.find(c => c.id === courseId);
+        if (course) course.currentCapacity -= 1;
+        this.presentToast('Booking cancelled successfully!', 'success');
+        delete this.userBookings[courseId];
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || 'Failed to cancel booking';
+        this.presentToast(errorMessage, 'danger');
+      }
+    });
+  }
 
 
-async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
-  const toast = await this.toastController.create({
-    message,
-    duration: 3000,
-    color,
-    position: 'top'
-  });
-  await toast.present();
-}
+  async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }
 
 
   showInfo() {

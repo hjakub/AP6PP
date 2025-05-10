@@ -34,4 +34,14 @@ export class CourseService {
       { headers }
     );
   }
+
+  getUserBookings(): Observable<any> {
+    const headers = this.authService.getAuthHeader();
+    return this.http.get('/api/bookings', { headers });
+  }
+
+  cancelBooking(bookingId: number): Observable<any> {
+    const headers = this.authService.getAuthHeader();
+    return this.http.delete(`/api/bookings/${bookingId}`, { headers });
+  }
 }
