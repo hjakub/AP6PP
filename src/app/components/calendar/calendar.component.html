@@ -6,7 +6,7 @@
           <button class="month-button" (click)="toggleMonthMenu()">
             Month <ion-icon name="chevron-down-outline"></ion-icon>
           </button>
-          <button class="reservation-button">
+          <button class="reservation-button" (click)="toMainPage()">
             Reservation <ion-icon name="add-circle"></ion-icon>
           </button>
         </div>
@@ -84,19 +84,5 @@
           <span class="time">{{ ev.time }}</span>
         </div>
       </div>
-      <h3>All Courses</h3>
-      <div class="courses-grid" *ngIf="courses.length; else noCourses">
-        <div *ngFor="let c of courses" class="course-card">
-          <h4>{{ c.serviceName }}</h4>
-          <p>Price: {{ c.price | currency }}</p>
-          <p>Room: {{ c.roomName }}</p>
-          <ion-button fill="solid" size="small" (click)="reserve(c.id)">
-            Enroll
-          </ion-button>
-        </div>
-      </div>
-      <ng-template #noCourses>
-        <p>No courses available.</p>
-      </ng-template>
     </div>
   </div>

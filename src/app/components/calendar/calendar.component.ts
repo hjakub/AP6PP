@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { CourseService }          from 'src/app/services/course.service';
-import { Course }                 from 'src/app/services/interfaces/course';
-import { CommonModule }           from '@angular/common';
-import { IonicModule }            from '@ionic/angular';
+import { CourseService } from 'src/app/services/course.service';
+import { Course } from 'src/app/services/interfaces/course';
+import { CommonModule } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
@@ -31,7 +32,7 @@ export class CalendarComponent implements OnInit {
   ];
 
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService, private router: Router) {}
 
   ngOnInit() {
     this.courseService.getAllCourses().subscribe(courses => {
@@ -164,4 +165,7 @@ export class CalendarComponent implements OnInit {
     });
   }
 
+  toMainPage() {
+      this.router.navigate(['/tabs/tab1']);
+  }
 }

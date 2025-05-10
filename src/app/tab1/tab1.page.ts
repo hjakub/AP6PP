@@ -29,7 +29,6 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  // Handle Reservation
   reserve(coachId: number) {
     this.courseService.reserveCourse(coachId).subscribe({
       next: (res) => {
@@ -43,7 +42,6 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  // Handle Enrollment
   enroll(courseId: number) {
     this.courseService.reserveCourse(courseId).subscribe({
       next: (res) => {
@@ -55,5 +53,9 @@ export class Tab1Page implements OnInit {
         alert('Enrollment failed!');
       }
     });
+  }
+
+  showInfo() {
+
   }
 }
