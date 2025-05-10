@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CourseService } from '../services/course.service';
 import { Course } from '../services/interfaces/course';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -11,8 +12,9 @@ import { Course } from '../services/interfaces/course';
 export class Tab1Page implements OnInit {
 
   courses: Course[] = [];
+  enrollmentErrors: { [courseId: number]: string } = {};
 
-  constructor(private courseService: CourseService) {}
+  constructor(private courseService: CourseService, private toastController: ToastController) {}
 
   ngOnInit() {
     this.loadCourses();
@@ -42,18 +44,41 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  enroll(courseId: number) {
-    this.courseService.reserveCourse(courseId).subscribe({
-      next: (res) => {
-        console.log('Enrollment successful', res);
-        alert('Enrollment successful!');
-      },
-      error: (err) => {
-        console.error('Enrollment failed', err);
-        alert('Enrollment failed!');
+enroll(courseId: number) {
+  this.courseService.reserveCourse(courseId).subscribe({
+    next: (res) => {
+      console.log('Enrollment successful', res);
+      this.presentToast('Enrollment successful!', 'success');
+      delete this.enrollmentErrors[courseId];
+    },
+    error: (err) => {
+      const errorMessage = err?.error?.message || 'Enrollment failed';
+      console.error('Enrollment failed', err);
+
+      this.presentToast(errorMessage, 'danger');
+
+      if (errorMessage === 'User already registered on this service') {
+        this.enrollmentErrors[courseId] = 'You are already registered on this service';
+      } else if (errorMessage === 'Service capacity is full') {
+        this.enrollmentErrors[courseId] = 'Service capacity is full';
+      } else {
+        this.enrollmentErrors[courseId] = 'Enrollment failed';
       }
-    });
-  }
+    }
+  });
+}
+
+
+async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+  const toast = await this.toastController.create({
+    message,
+    duration: 3000,
+    color,
+    position: 'top'
+  });
+  await toast.present();
+}
+
 
   showInfo() {
 

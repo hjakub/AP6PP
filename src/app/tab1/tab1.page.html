@@ -22,10 +22,21 @@
         <ion-card-content>
           <ion-title>{{ c.serviceName }}</ion-title>
           <div class="priceroom">
-            <p>Price: {{ c.price | currency }}</p>
-            <p>Room: {{ c.roomName }}</p>
+            <p><b>Date:</b> {{ c.start | date:'dd.MM.yyyy' }} </p>
+            <p><b>Time:</b> {{ c.start | date: 'HH:mm' }} - {{ c.end | date: 'HH:mm' }} </p>
+            <p><b>Capacity:</b> {{ c.currentCapacity }}/{{ c.totalCapacity }}</p>
+            <p><b>Price:</b> {{ c.price }} R,-</p>
+            <p><b>Room:</b> {{ c.roomName }}</p>
           </div>
-          <ion-button (click)="enroll(c.id)">Enroll</ion-button>
+        
+          <ng-container *ngIf="!enrollmentErrors[c.id]; else showError">
+            <ion-button (click)="enroll(c.id)">Enroll</ion-button>
+          </ng-container>
+        
+          <ng-template #showError>
+            <p class="status-message"><ion-icon name="alert-outline"></ion-icon>{{ enrollmentErrors[c.id] }}</p>
+          </ng-template>
+        
           <ion-button class="leftb" (click)="showInfo()">More info</ion-button>
         </ion-card-content>
       </ion-card>
