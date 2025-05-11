@@ -106,6 +106,10 @@ export class Tab2Page implements OnInit {
   
         if (token && userId) {
           this.authService.setSession(token, userId);
+          const tab1Component = document.querySelector('app-tab1') as any;
+          if (tab1Component?.loadUserBookings) {
+            tab1Component.loadUserBookings();
+          }
   
           try {
             const userInfo = await this.userService.getUserById(userId).toPromise();
@@ -151,6 +155,11 @@ export class Tab2Page implements OnInit {
     this.authService.logout();
     this.clearProfile();
     this.presentToast('Succesfully logged out.', 'success');
+
+    const tab1Component = document.querySelector('app-tab1') as any;
+    if (tab1Component?.clearUserBookings) {
+      tab1Component.clearUserBookings();
+    }
   }
 
   isLoggedIn(): boolean {
@@ -188,14 +197,14 @@ export class Tab2Page implements OnInit {
   purchase(amount: number) {
     const userId = this.userService.getUserIdFromToken();
     if (userId === null) {
-        this.presentToast('Could not identify user.', 'danger');
-        return;
+      this.presentToast('Could not identify user.', 'danger');
+      return;
     }
     if (this.roleId === null) {
-        this.presentToast('User role information is missing. Cannot complete purchase.', 'danger');
-        return;
+      this.presentToast('User role information is missing. Cannot complete purchase.', 'danger');
+      return;
     }
-
+  
     const payload = {
       userId,
       roleId: this.roleId,
@@ -203,21 +212,26 @@ export class Tab2Page implements OnInit {
       transactionId: Date.now().toString(),
       transactionType: 'credit' as 'credit' | 'reservation',
     }
-
+  
     this.paymentService.createPayment(payload).subscribe({
-      next: response => {
+      next: (response) => {
+        console.log('Payment response:', response);
         this.presentToast(`Added ${amount} R,- to your balance!`, 'success');
-        if (response?.data?.balance != null) {
-          this.balance = response.data.balance;
-        } else {
-          this.loadBalance();
-        }
+        this.paymentService.getBalance().subscribe({
+          next: (updatedBalance) => {
+            // this.balance = updatedBalance;
+            this.balance += amount;
+          },
+          error: () => {
+            this.presentToast('Failed to refresh balance.', 'warning');
+          }
+        });
       },
       error: err => {
         console.error('Payment failed:', err);
         this.presentToast('Payment failed: ' + (err.error?.message || 'Server error'),'danger');
       }
-    })
+    });
   }
 
   async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {

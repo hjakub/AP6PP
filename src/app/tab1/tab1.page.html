@@ -35,13 +35,24 @@
               {{ enrollmentErrors[c.id] }}
             </p>
           </ng-container>
+
+          <ng-container *ngIf="!isLoggedIn()">
+            <p class="status-message">
+              <ion-icon name="alert-outline"></ion-icon>
+              You must log in first to enroll
+            </p>
+          </ng-container>
         
           <ng-container *ngIf="!userBookings[c.id]; else cancelTemplate">
-            <ion-button (click)="enroll(c.id)">Enroll</ion-button>
+            <ion-button *ngIf="!userBookings[c.id] && isLoggedIn()" (click)="enroll(c.id)">
+              Enroll
+            </ion-button>
           </ng-container>
 
           <ng-template #cancelTemplate>
-            <ion-button color="danger" (click)="cancelEnrollment(c.id)">Cancel</ion-button>
+            <ion-button *ngIf="userBookings[c.id] && isLoggedIn()" (click)="cancelEnrollment(c.id)">
+              Cancel
+            </ion-button>
           </ng-template>
         
           <!--<ion-button class="leftb" (click)="showInfo()">More info</ion-button>-->
