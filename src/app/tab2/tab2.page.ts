@@ -5,6 +5,7 @@ import { LoadingController, ToastController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { PaymentService } from '../services/payment.service';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-tab2',
@@ -56,6 +57,7 @@ export class Tab2Page implements OnInit {
     private toastController: ToastController,
     private paymentService: PaymentService,
     private http: HttpClient,
+    private sessionService: SessionService,
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +66,10 @@ export class Tab2Page implements OnInit {
       this.profilePage = true;
       this.isLogIn = false;
       this.loadUserData();
+      this.sessionService.balance$.subscribe(balance => {
+        console.log('Tab2 received balance from SessionService:', balance);
+        this.balance = balance;
+      });
       this.loadBalance();
     } else {
       this.profilePage = false;
@@ -82,6 +88,7 @@ export class Tab2Page implements OnInit {
     this.userService.getUserById(userId).subscribe({
       next: (user) => {
         this.balance = user?.balance ?? 0;
+        this.sessionService.setBalance(this.balance);
       },
       error: () => {
         this.balance = 0;
@@ -221,6 +228,7 @@ export class Tab2Page implements OnInit {
           next: (updatedBalance) => {
             // this.balance = updatedBalance;
             this.balance += amount;
+            this.sessionService.setBalance(this.balance);
           },
           error: () => {
             this.presentToast('Failed to refresh balance.', 'warning');

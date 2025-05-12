@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service';
 import { Course } from '../services/interfaces/course';
 import { ToastController, Platform } from '@ionic/angular';
 import { PaymentService } from '../services/payment.service';
+import { SessionService } from '../services/session.service';
 
 
 @Component({
@@ -17,18 +18,27 @@ export class Tab1Page implements OnInit {
   enrollmentErrors: { [courseId: number]: string } = {};
   userBookings: { [courseId: number]: number } = {};
   balance: number = 0;
+  roleId: number | null = null;
 
-  constructor(private courseService: CourseService, private toastController: ToastController, private userService: UserService, private paymentService: PaymentService) {}
+  constructor(private courseService: CourseService,
+              private toastController: ToastController,
+              private userService: UserService,
+              private paymentService: PaymentService,
+              private sessionService: SessionService,
+  ) {}
 
   ngOnInit() {
     this.loadCourses();
     this.loadUserBookings();
-    this.loadBalance();
+    this.sessionService.balance$.subscribe(balance => {
+      console.log('Tab1 received balance from SessionService:', balance);
+      this.balance = balance;
+    });
   }
 
   ionViewWillEnter() {
     this.enrollmentErrors = {};
-    this.loadBalance();
+    this.balance = this.sessionService.getBalance();
   }
 
   loadCourses() {
@@ -38,6 +48,18 @@ export class Tab1Page implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load courses', err);
+      }
+    });
+  }
+
+  loadUserData() {
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.roleId = user?.roleId ?? null;
+      },
+      error: (err) => {
+        console.error('Failed to load user data:', err);
+        this.roleId = null;
       }
     });
   }
@@ -53,22 +75,6 @@ export class Tab1Page implements OnInit {
       },
       error: (err) => {
         console.error('Failed to load user bookings', err);
-      }
-    });
-  }
-
-  loadBalance() {
-    const userId = this.userService.getUserIdFromToken();
-    if (!userId) {
-      //this.presentToast('Could not identify user.', 'danger');
-      return;
-    }
-    this.userService.getUserById(userId).subscribe({
-      next: (user) => {
-        this.balance = user?.balance ?? 0;
-      },
-      error: () => {
-        this.balance = 0;
       }
     });
   }
@@ -89,17 +95,16 @@ export class Tab1Page implements OnInit {
   enroll(courseId: number) {
     const course = this.courses.find(c => c.id === courseId);
     if (!course) return;
-
-    /*
     const enrollmentCost = course.price; 
     if (this.balance < enrollmentCost) {
       this.presentToast('Insufficient balance to enroll in this course.', 'danger');
-      console.log(this.balance);
       return;
-    } */
+    }
     this.courseService.reserveCourse(courseId).subscribe({
       next: () => {
         course.currentCapacity += 1;
+        this.balance -= enrollmentCost;
+        this.sessionService.setBalance(this.balance);
         this.presentToast('Enrollment successful!', 'success');
         delete this.enrollmentErrors[courseId];
         this.loadUserBookings();
@@ -127,11 +132,14 @@ export class Tab1Page implements OnInit {
   cancelEnrollment(courseId: number) {
     const bookingId = this.userBookings[courseId];
     if (!bookingId) return;
-
+    const course = this.courses.find(c => c.id === courseId);
+    if (!course) return;
+    const refundAmount = course.price;
     this.courseService.cancelBooking(bookingId).subscribe({
       next: () => {
-        const course = this.courses.find(c => c.id === courseId);
         if (course) course.currentCapacity -= 1;
+        this.balance += refundAmount;
+        this.sessionService.setBalance(this.balance);
         this.presentToast('Booking cancelled successfully!', 'success');
         delete this.userBookings[courseId];
       },
