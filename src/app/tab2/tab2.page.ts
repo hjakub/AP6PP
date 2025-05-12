@@ -67,7 +67,6 @@ export class Tab2Page implements OnInit {
       this.isLogIn = false;
       this.loadUserData();
       this.sessionService.balance$.subscribe(balance => {
-        console.log('Tab2 received balance from SessionService:', balance);
         this.balance = balance;
       });
       this.loadBalance();

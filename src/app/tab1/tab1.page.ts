@@ -31,7 +31,6 @@ export class Tab1Page implements OnInit {
     this.loadCourses();
     this.loadUserBookings();
     this.sessionService.balance$.subscribe(balance => {
-      console.log('Tab1 received balance from SessionService:', balance);
       this.balance = balance;
     });
   }
